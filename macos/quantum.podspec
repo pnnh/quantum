@@ -5,33 +5,19 @@
 Pod::Spec.new do |s|
   s.name             = 'quantum'
   s.version          = '0.0.1'
-  s.summary          = 'A new flutter plugin project.'
+  s.summary          = 'A new Flutter plugin project.'
   s.description      = <<-DESC
-A new flutter plugin project.
+A new Flutter plugin project.
                        DESC
   s.homepage         = 'http://example.com'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'xspanni@gmail.com' }
+  s.author           = { 'Your Company' => 'email@example.com' }
+
   s.source           = { :path => '.' }
-  s.source_files     = 'Classes/**/*'
+  s.source_files = 'Classes/**/*'
   s.dependency 'FlutterMacOS'
 
-  s.platform = :osx, '10.13'
+  s.platform = :osx, '10.11'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
   s.swift_version = '5.0'
-
-  #s.vendored_library    = '../bundle/lib/libhello.dylib'
-  #s.vendored_library    = 'libquantum.dylib'
-#   s.vendored_libraries = "../bundle/lib/libhello.dylib"
-#   s.library  = 'hello'
-#   s.library = 'c++', 'stdc++', 'z'
- #s.vendored_frameworks = '../bundle/lib/quantum_native.framework'
- s.vendored_frameworks = 'frameworks/lib/quantum_native.framework'
-#   s.library = 'quantum_native'
-#   s.pod_target_xcconfig = {
-# #     'LIBRARY_SEARCH_PATHS' => '$(PODS_ROOT)/../bundle/lib',
-#     'OTHER_LDFLAGS' => '-lquantum_native'
-#   }
-    #s.vendored_library    = 'libcouch_shared.dylib'
-#   s.library  = 'couch_shared'
 end

@@ -1,4 +1,4 @@
-#include "include/quantum/quantum_plugin.h"
+#include "quantum_plugin.h"
 
 // This must be included before many other Windows headers.
 #include <windows.h>
@@ -10,26 +10,10 @@
 #include <flutter/plugin_registrar_windows.h>
 #include <flutter/standard_method_codec.h>
 
-#include <map>
 #include <memory>
 #include <sstream>
 
-namespace {
-
-class QuantumPlugin : public flutter::Plugin {
- public:
-  static void RegisterWithRegistrar(flutter::PluginRegistrarWindows *registrar);
-
-  QuantumPlugin();
-
-  virtual ~QuantumPlugin();
-
- private:
-  // Called when a method is called on this plugin's channel from Dart.
-  void HandleMethodCall(
-      const flutter::MethodCall<flutter::EncodableValue> &method_call,
-      std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result);
-};
+namespace quantum {
 
 // static
 void QuantumPlugin::RegisterWithRegistrar(
@@ -72,11 +56,4 @@ void QuantumPlugin::HandleMethodCall(
   }
 }
 
-}  // namespace
-
-void QuantumPluginRegisterWithRegistrar(
-    FlutterDesktopPluginRegistrarRef registrar) {
-  QuantumPlugin::RegisterWithRegistrar(
-      flutter::PluginRegistrarManager::GetInstance()
-          ->GetRegistrar<flutter::PluginRegistrarWindows>(registrar));
-}
+}  // namespace quantum
