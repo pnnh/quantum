@@ -10,7 +10,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: direct.multiverse.quantum
+        package: xyz.calieo.quantum
         pluginClass: QuantumPlugin
         ffiPlugin: true
       ios:
@@ -39,6 +39,7 @@ dependencies:
   js: ^0.6.1
   path_provider: ^2.0.11
   path: ^1.8.2
+  logger: ^2.4.0
 
 dev_dependencies:
   ffigen: ^11.0.0
