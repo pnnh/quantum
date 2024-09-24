@@ -1,6 +1,7 @@
 import 'dart:math';
 
-String generateRandomString(int len) {
-  var r = Random();
-  return String.fromCharCodes(List.generate(len, (index) => r.nextInt(33) + 89));
+// 生成随机字符串
+String generateRandomString(int length) {
+  var random = Random();
+  return String.fromCharCodes(List.generate(length, (index) => random.nextInt(33) + 89));
 }
