@@ -1,4 +1,4 @@
-package xyz.huable.quantum
+package xyz.huable.quantum_example
 
 import io.flutter.embedding.android.FlutterActivity
 

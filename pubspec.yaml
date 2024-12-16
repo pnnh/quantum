@@ -10,7 +10,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: xyz.calieo.quantum
+        package: xyz.huable.quantum
         pluginClass: QuantumPlugin
         ffiPlugin: true
       ios:

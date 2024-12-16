@@ -21,9 +21,9 @@ public final class GeneratedPluginRegistrant {
       Log.e(TAG, "Error registering plugin path_provider_android, io.flutter.plugins.pathprovider.PathProviderPlugin", e);
     }
     try {
-      flutterEngine.getPlugins().add(new xyz.calieo.quantum.QuantumPlugin());
+      flutterEngine.getPlugins().add(new xyz.huable.quantum.QuantumPlugin());
     } catch (Exception e) {
-      Log.e(TAG, "Error registering plugin quantum, xyz.calieo.quantum.QuantumPlugin", e);
+      Log.e(TAG, "Error registering plugin quantum, xyz.huable.quantum.QuantumPlugin", e);
     }
   }
 }

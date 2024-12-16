@@ -1,4 +1,4 @@
-package com.example.quantum
+package xyz.huable.quantum
 
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel

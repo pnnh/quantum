@@ -1,4 +1,4 @@
-package com.example.quantum
+package xyz.huable.quantum
 
 import androidx.annotation.NonNull
 
