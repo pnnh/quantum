@@ -20,7 +20,7 @@ flutter:
         pluginClass: QuantumPlugin
         ffiPlugin: true
       windows:
-        pluginClass: QuantumPlugin
+        pluginClass: QuantumPluginCApi
         ffiPlugin: true
       linux:
         pluginClass: QuantumPlugin
@@ -36,13 +36,13 @@ dependencies:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
   ffi: ^2.1.0
-  js: ^0.6.1
+  js: ^0.7.1
   path_provider: ^2.0.11
   path: ^1.8.2
   logger: ^2.4.0
 
 dev_dependencies:
-  ffigen: ^11.0.0
+  ffigen: ^16.1.0
   build_runner:
   flutter_lints:
   flutter_test:

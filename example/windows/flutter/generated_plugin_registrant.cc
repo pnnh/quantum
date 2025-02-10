@@ -6,9 +6,9 @@
 
 #include "generated_plugin_registrant.h"
 
-#include <quantum/quantum_plugin.h>
+#include <quantum/quantum_plugin_c_api.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
-  QuantumPluginRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("QuantumPlugin"));
+  QuantumPluginCApiRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("QuantumPluginCApi"));
 }
