@@ -28,6 +28,7 @@ class PathHelper {
     } else if (Platform.isWindows) {
       home = envVars['UserProfile'];
     }
+    print("getAppWorkDir: $home");
     return home;
   }
 }
