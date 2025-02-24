@@ -1,8 +1,9 @@
 import Cocoa
-@preconcurrency import FlutterMacOS
+import FlutterMacOS
+import Foundation
 
-public class QuantumPlugin: NSObject, FlutterPlugin {
-  public static func register(with registrar: FlutterPluginRegistrar) {
+public class QuantumPlugin: NSObject, @preconcurrency FlutterPlugin {
+    nonisolated public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(name: "quantum", binaryMessenger: registrar.messenger)
     let instance = QuantumPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
@@ -12,8 +13,25 @@ public class QuantumPlugin: NSObject, FlutterPlugin {
     switch call.method {
     case "getPlatformVersion":
       result("macOS " + ProcessInfo.processInfo.operatingSystemVersionString)
+    case "chooseFiles":
+        result(promptForWorkingDirectoryPermission())
     default:
       result(FlutterMethodNotImplemented)
     }
   }
+    
+    
+    public func promptForWorkingDirectoryPermission() -> String? {
+       let openPanel = NSOpenPanel()
+       openPanel.message = "Choose your directory"
+       openPanel.prompt = "Choose"
+       openPanel.allowedFileTypes = ["none"]
+       openPanel.allowsOtherFileTypes = false
+       openPanel.canChooseFiles = false
+       openPanel.canChooseDirectories = true
+       
+    let response = openPanel.runModal()
+       print(openPanel.urls) // this contains the chosen folder
+       return openPanel.urls.first?.absoluteString
+    }
 }

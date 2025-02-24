@@ -15,6 +15,11 @@ class Quantum {
     return version;
   }
 
+  static Future<String?> chooseFiles() async {
+    final String? files = await _channel.invokeMethod("chooseFiles");
+    return files;
+  }
+
   static String? resolvePath(String relativePath) {
     return PathHelper().resolvePath(relativePath);
   }

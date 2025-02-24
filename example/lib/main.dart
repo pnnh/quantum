@@ -60,9 +60,16 @@ class _MyAppState extends State<MyApp> {
             ),
             SizedBox(
                 child: TextButton(
-                    child: const Text('Click'),
+                    child: const Text('pluginSayHello'),
                     onPressed: () async {
                       quantum.Quantum.pluginSayHello();
+                    })),
+            SizedBox(
+                child: TextButton(
+                    child: const Text('chooseFiles'),
+                    onPressed: () async {
+                      var files = await quantum.Quantum.chooseFiles();
+                      debugPrint("chooseFiles $files");
                     }))
           ])),
     );
