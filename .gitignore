@@ -30,3 +30,7 @@ build/
 lib/gen/*
 
 cmake-build-*
+
+# Swift Package Manager
+.build/
+.swiftpm/

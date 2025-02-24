@@ -42,6 +42,6 @@ class PathHelper {
     if (Platform.isWindows) {
       return "C:\\Projects\\Pnnh\\blog";
     }
-    return "/home/Projects/Pnnh/blog";
+    return "/Users/Larry/Projects/github/blog";
   }
 }

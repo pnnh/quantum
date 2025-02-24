@@ -1,5 +1,5 @@
 import Cocoa
-import FlutterMacOS
+@preconcurrency import FlutterMacOS
 
 public class QuantumPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
