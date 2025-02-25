@@ -29,7 +29,7 @@
       "displayName": "macOS Config",
       "generator": "Xcode",
       "binaryDir": "${sourceDir}/build/macos",
-      "installDir": "${sourceDir}/install/macos",
+      "installDir": "${sourceDir}/../macos/quantum/Frameworks",
       "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",

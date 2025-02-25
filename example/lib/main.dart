@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:quantum/bindings.dart';
 import 'package:quantum/quantum.dart' as quantum;
 
 void main() {
@@ -59,9 +60,11 @@ class _MyAppState extends State<MyApp> {
             ),
             SizedBox(
                 child: TextButton(
-                    child: const Text('pluginSayHello'),
+                    child: const Text('nativeAdd'),
                     onPressed: () async {
-                      quantum.Quantum.pluginSayHello();
+                      var quantumFFI = FFIBindings();
+                      var sum = quantumFFI.nativeAdd(3, 8);
+                      debugPrint("quantumNativeAdd: $sum");
                     })),
             SizedBox(
                 child: TextButton(

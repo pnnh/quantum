@@ -49,8 +49,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-#ffigen:
-#  output: 'lib/generated_bindings.dart'
-#  headers:
-#    entry-points:
-#      - 'src/quantum.h'
+ffigen:
+  output: 'lib/generated_bindings.dart'
+  headers:
+    entry-points:
+      - 'src/quantum/quantum.h'
+  compiler-opts:
+    - '-Isrc'

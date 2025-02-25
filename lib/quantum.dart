@@ -1,12 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'dart:ffi' as ffi;
+import 'dart:ffi';
+import 'dart:io' show Platform, Directory;
+import 'dart:io';
 
-import 'database/database.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:quantum/generated_bindings.dart';
+
+import 'bindings.dart';
 import 'filesystem/path.dart';
 import 'messages.g.dart';
-
-const String _libName = 'quantum';
 
 class Quantum {
   static const MethodChannel _channel = MethodChannel('quantum');
@@ -29,9 +35,5 @@ class Quantum {
 
   static String? resolvePath(String relativePath) {
     return PathHelper().resolvePath(relativePath);
-  }
-
-  static void pluginSayHello() {
-    QADatabase.instance.pluginSayHello();
   }
 }
