@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import 'database/database.dart';
 import 'filesystem/path.dart';
+import 'messages.g.dart';
 
 const String _libName = 'quantum';
 
@@ -18,6 +19,12 @@ class Quantum {
   static Future<String?> chooseFiles() async {
     final String? files = await _channel.invokeMethod("chooseFiles");
     return files;
+  }
+
+  static Future<String?> getHostLanguage() async {
+    var hostApi = QuantumHostApi();
+    final String language = await hostApi.getHostLanguage();
+    return language;
   }
 
   static String? resolvePath(String relativePath) {

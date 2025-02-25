@@ -20,6 +20,10 @@ set(PLUGIN_NAME "quantum_plugin")
 list(APPEND PLUGIN_SOURCES
   "quantum_plugin.cpp"
   "quantum_plugin.h"
+  "runner/messages.g.cpp"
+  "runner/messages.g.h"
+  "runner/messages.host.cpp"
+  "runner/messages.host.h" 
 )
 
 # Define the plugin library target. Its name must not be changed (see comment

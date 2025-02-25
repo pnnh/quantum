@@ -34,3 +34,6 @@ cmake-build-*
 # Swift Package Manager
 .build/
 .swiftpm/
+
+# Visual Studio
+.vs/

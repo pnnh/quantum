@@ -13,6 +13,8 @@
 #include <memory>
 #include <sstream>
 
+#include "runner/messages.host.h"
+
 namespace quantum {
 
 // static
@@ -31,6 +33,9 @@ void QuantumPlugin::RegisterWithRegistrar(
       });
 
   registrar->AddPlugin(std::move(plugin));
+
+  QuantumHostApi* hostApiHostImpl = new QuantumHostApiImpl();
+  QuantumHostApi::SetUp(registrar->messenger(), hostApiHostImpl);
 }
 
 QuantumPlugin::QuantumPlugin() {}

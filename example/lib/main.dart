@@ -1,9 +1,8 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quantum/quantum.dart' as quantum;
-import 'package:quantum_example/utils.dart';
 
 void main() {
   runApp(const MyApp());
@@ -70,6 +69,13 @@ class _MyAppState extends State<MyApp> {
                     onPressed: () async {
                       var files = await quantum.Quantum.chooseFiles();
                       debugPrint("chooseFiles $files");
+                    })),
+            SizedBox(
+                child: TextButton(
+                    child: const Text('getHostLanguage'),
+                    onPressed: () async {
+                      var files = await quantum.Quantum.getHostLanguage();
+                      debugPrint("getHostLanguage $files");
                     }))
           ])),
     );
