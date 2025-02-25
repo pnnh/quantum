@@ -11,13 +11,8 @@ import 'package:pigeon/pigeon.dart';
   gobjectOptions: GObjectOptions(),
   kotlinOut: 'android/app/src/main/kotlin/dev/flutter/quantum/Messages.g.kt',
   kotlinOptions: KotlinOptions(),
-  javaOut: 'android/app/src/main/java/io/flutter/plugins/Messages.java',
-  javaOptions: JavaOptions(),
-  swiftOut: 'ios/Runner/Messages.g.swift',
+  swiftOut: 'macos/quantum/Sources/quantum/Messages.g.swift',
   swiftOptions: SwiftOptions(),
-  objcHeaderOut: 'macos/Runner/messages.g.h',
-  objcSourceOut: 'macos/Runner/messages.g.m',
-  objcOptions: ObjcOptions(prefix: 'PGN'),
   dartPackageName: 'quantum',
 ))
 class MessageData {

@@ -7,6 +7,10 @@ public class QuantumPlugin: NSObject, @preconcurrency FlutterPlugin {
     let channel = FlutterMethodChannel(name: "quantum", binaryMessenger: registrar.messenger)
     let instance = QuantumPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
+        
+        let apiImpl =  QuantumHostApiImpl()
+        QuantumHostApiSetup.setUp(binaryMessenger: registrar.messenger, api: apiImpl)
+        
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
