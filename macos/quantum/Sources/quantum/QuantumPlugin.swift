@@ -35,7 +35,8 @@ public class QuantumPlugin: NSObject, @preconcurrency FlutterPlugin {
        openPanel.canChooseDirectories = true
        
     let response = openPanel.runModal()
-       print(openPanel.urls) // this contains the chosen folder
-       return openPanel.urls.first?.absoluteString
+       print("openPanel.urls \(openPanel.urls)") // this contains the chosen folder
+        let absUrl = openPanel.urls.first?.absoluteString
+        return absUrl
     }
 }

@@ -23,7 +23,10 @@ class Quantum {
   }
 
   static Future<String?> chooseFiles() async {
-    final String? files = await _channel.invokeMethod("chooseFiles");
+    String? files = await _channel.invokeMethod("chooseFiles");
+    if (files != null) {
+      files = Uri.decodeFull(files);
+    }
     return files;
   }
 

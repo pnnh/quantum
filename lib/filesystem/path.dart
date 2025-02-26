@@ -5,6 +5,7 @@ import 'package:path/path.dart' show join;
 class PathHelper {
   static const String workDirPrefix = "file://work";
   static const String blogDirPrefix = "file://blog";
+  static const String filesystemPrefix = "file://";
 
   String? resolvePath(String path) {
     String? realPath = path;
@@ -17,6 +18,8 @@ class PathHelper {
     } else if (path.startsWith(blogDirPrefix)) {
       var blogDir = getBlogDir();
       realPath = join(blogDir, path.substring(blogDirPrefix.length));
+    } else if (path.startsWith(filesystemPrefix)) {
+      realPath = path.substring(filesystemPrefix.length);
     }
 
     return realPath;
