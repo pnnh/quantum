@@ -68,12 +68,38 @@ data class MessageData (
     )
   }
 }
+
+/** Generated class from Pigeon that represents data sent in messages. */
+data class DirectoryResponse (
+  val absoluteUrl: String? = null,
+  val bookmarkString: String? = null
+)
+ {
+  companion object {
+    fun fromList(pigeonVar_list: List<Any?>): DirectoryResponse {
+      val absoluteUrl = pigeonVar_list[0] as String?
+      val bookmarkString = pigeonVar_list[1] as String?
+      return DirectoryResponse(absoluteUrl, bookmarkString)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf(
+      absoluteUrl,
+      bookmarkString,
+    )
+  }
+}
 private open class MessagesPigeonCodec : StandardMessageCodec() {
   override fun readValueOfType(type: Byte, buffer: ByteBuffer): Any? {
     return when (type) {
       129.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
           MessageData.fromList(it)
+        }
+      }
+      130.toByte() -> {
+        return (readValue(buffer) as? List<Any?>)?.let {
+          DirectoryResponse.fromList(it)
         }
       }
       else -> super.readValueOfType(type, buffer)
@@ -85,6 +111,10 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
         stream.write(129)
         writeValue(stream, value.toList())
       }
+      is DirectoryResponse -> {
+        stream.write(130)
+        writeValue(stream, value.toList())
+      }
       else -> super.writeValue(stream, value)
     }
   }
@@ -94,6 +124,8 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface QuantumHostApi {
   fun getHostLanguage(): String
+  fun chooseDirectory(): DirectoryResponse?
+  fun startAccessingSecurityScopedResource(bookmarkString: String): String?
   fun add(a: Long, b: Long): Long
   fun sendMessage(message: MessageData, callback: (Result<Boolean>) -> Unit)
 
@@ -112,6 +144,38 @@ interface QuantumHostApi {
           channel.setMessageHandler { _, reply ->
             val wrapped: List<Any?> = try {
               listOf(api.getHostLanguage())
+            } catch (exception: Throwable) {
+              wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.quantum.QuantumHostApi.chooseDirectory$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              listOf(api.chooseDirectory())
+            } catch (exception: Throwable) {
+              wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.quantum.QuantumHostApi.startAccessingSecurityScopedResource$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val bookmarkStringArg = args[0] as String
+            val wrapped: List<Any?> = try {
+              listOf(api.startAccessingSecurityScopedResource(bookmarkStringArg))
             } catch (exception: Throwable) {
               wrapError(exception)
             }

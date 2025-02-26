@@ -93,6 +93,37 @@ class MessageData {
 };
 
 
+// Generated class from Pigeon that represents data sent in messages.
+class DirectoryResponse {
+ public:
+  // Constructs an object setting all non-nullable fields.
+  DirectoryResponse();
+
+  // Constructs an object setting all fields.
+  explicit DirectoryResponse(
+    const std::string* absolute_url,
+    const std::string* bookmark_string);
+
+  const std::string* absolute_url() const;
+  void set_absolute_url(const std::string_view* value_arg);
+  void set_absolute_url(std::string_view value_arg);
+
+  const std::string* bookmark_string() const;
+  void set_bookmark_string(const std::string_view* value_arg);
+  void set_bookmark_string(std::string_view value_arg);
+
+
+ private:
+  static DirectoryResponse FromEncodableList(const flutter::EncodableList& list);
+  flutter::EncodableList ToEncodableList() const;
+  friend class QuantumHostApi;
+  friend class PigeonInternalCodecSerializer;
+  std::optional<std::string> absolute_url_;
+  std::optional<std::string> bookmark_string_;
+
+};
+
+
 class PigeonInternalCodecSerializer : public flutter::StandardCodecSerializer {
  public:
   PigeonInternalCodecSerializer();
@@ -119,6 +150,8 @@ class QuantumHostApi {
   QuantumHostApi& operator=(const QuantumHostApi&) = delete;
   virtual ~QuantumHostApi() {}
   virtual ErrorOr<std::string> GetHostLanguage() = 0;
+  virtual ErrorOr<std::optional<DirectoryResponse>> ChooseDirectory() = 0;
+  virtual ErrorOr<std::optional<std::string>> StartAccessingSecurityScopedResource(const std::string& bookmark_string) = 0;
   virtual ErrorOr<int64_t> Add(
     int64_t a,
     int64_t b) = 0;

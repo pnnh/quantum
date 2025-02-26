@@ -99,6 +99,63 @@ MessageData MessageData::FromEncodableList(const EncodableList& list) {
   return decoded;
 }
 
+// DirectoryResponse
+
+DirectoryResponse::DirectoryResponse() {}
+
+DirectoryResponse::DirectoryResponse(
+  const std::string* absolute_url,
+  const std::string* bookmark_string)
+ : absolute_url_(absolute_url ? std::optional<std::string>(*absolute_url) : std::nullopt),
+    bookmark_string_(bookmark_string ? std::optional<std::string>(*bookmark_string) : std::nullopt) {}
+
+const std::string* DirectoryResponse::absolute_url() const {
+  return absolute_url_ ? &(*absolute_url_) : nullptr;
+}
+
+void DirectoryResponse::set_absolute_url(const std::string_view* value_arg) {
+  absolute_url_ = value_arg ? std::optional<std::string>(*value_arg) : std::nullopt;
+}
+
+void DirectoryResponse::set_absolute_url(std::string_view value_arg) {
+  absolute_url_ = value_arg;
+}
+
+
+const std::string* DirectoryResponse::bookmark_string() const {
+  return bookmark_string_ ? &(*bookmark_string_) : nullptr;
+}
+
+void DirectoryResponse::set_bookmark_string(const std::string_view* value_arg) {
+  bookmark_string_ = value_arg ? std::optional<std::string>(*value_arg) : std::nullopt;
+}
+
+void DirectoryResponse::set_bookmark_string(std::string_view value_arg) {
+  bookmark_string_ = value_arg;
+}
+
+
+EncodableList DirectoryResponse::ToEncodableList() const {
+  EncodableList list;
+  list.reserve(2);
+  list.push_back(absolute_url_ ? EncodableValue(*absolute_url_) : EncodableValue());
+  list.push_back(bookmark_string_ ? EncodableValue(*bookmark_string_) : EncodableValue());
+  return list;
+}
+
+DirectoryResponse DirectoryResponse::FromEncodableList(const EncodableList& list) {
+  DirectoryResponse decoded;
+  auto& encodable_absolute_url = list[0];
+  if (!encodable_absolute_url.IsNull()) {
+    decoded.set_absolute_url(std::get<std::string>(encodable_absolute_url));
+  }
+  auto& encodable_bookmark_string = list[1];
+  if (!encodable_bookmark_string.IsNull()) {
+    decoded.set_bookmark_string(std::get<std::string>(encodable_bookmark_string));
+  }
+  return decoded;
+}
+
 
 PigeonInternalCodecSerializer::PigeonInternalCodecSerializer() {}
 
@@ -108,6 +165,9 @@ EncodableValue PigeonInternalCodecSerializer::ReadValueOfType(
   switch (type) {
     case 129: {
         return CustomEncodableValue(MessageData::FromEncodableList(std::get<EncodableList>(ReadValue(stream))));
+      }
+    case 130: {
+        return CustomEncodableValue(DirectoryResponse::FromEncodableList(std::get<EncodableList>(ReadValue(stream))));
       }
     default:
       return flutter::StandardCodecSerializer::ReadValueOfType(type, stream);
@@ -121,6 +181,11 @@ void PigeonInternalCodecSerializer::WriteValue(
     if (custom_value->type() == typeid(MessageData)) {
       stream->WriteByte(129);
       WriteValue(EncodableValue(std::any_cast<MessageData>(*custom_value).ToEncodableList()), stream);
+      return;
+    }
+    if (custom_value->type() == typeid(DirectoryResponse)) {
+      stream->WriteByte(130);
+      WriteValue(EncodableValue(std::any_cast<DirectoryResponse>(*custom_value).ToEncodableList()), stream);
       return;
     }
   }
@@ -156,6 +221,65 @@ void QuantumHostApi::SetUp(
           }
           EncodableList wrapped;
           wrapped.push_back(EncodableValue(std::move(output).TakeValue()));
+          reply(EncodableValue(std::move(wrapped)));
+        } catch (const std::exception& exception) {
+          reply(WrapError(exception.what()));
+        }
+      });
+    } else {
+      channel.SetMessageHandler(nullptr);
+    }
+  }
+  {
+    BasicMessageChannel<> channel(binary_messenger, "dev.flutter.pigeon.quantum.QuantumHostApi.chooseDirectory" + prepended_suffix, &GetCodec());
+    if (api != nullptr) {
+      channel.SetMessageHandler([api](const EncodableValue& message, const flutter::MessageReply<EncodableValue>& reply) {
+        try {
+          ErrorOr<std::optional<DirectoryResponse>> output = api->ChooseDirectory();
+          if (output.has_error()) {
+            reply(WrapError(output.error()));
+            return;
+          }
+          EncodableList wrapped;
+          auto output_optional = std::move(output).TakeValue();
+          if (output_optional) {
+            wrapped.push_back(CustomEncodableValue(std::move(output_optional).value()));
+          } else {
+            wrapped.push_back(EncodableValue());
+          }
+          reply(EncodableValue(std::move(wrapped)));
+        } catch (const std::exception& exception) {
+          reply(WrapError(exception.what()));
+        }
+      });
+    } else {
+      channel.SetMessageHandler(nullptr);
+    }
+  }
+  {
+    BasicMessageChannel<> channel(binary_messenger, "dev.flutter.pigeon.quantum.QuantumHostApi.startAccessingSecurityScopedResource" + prepended_suffix, &GetCodec());
+    if (api != nullptr) {
+      channel.SetMessageHandler([api](const EncodableValue& message, const flutter::MessageReply<EncodableValue>& reply) {
+        try {
+          const auto& args = std::get<EncodableList>(message);
+          const auto& encodable_bookmark_string_arg = args.at(0);
+          if (encodable_bookmark_string_arg.IsNull()) {
+            reply(WrapError("bookmark_string_arg unexpectedly null."));
+            return;
+          }
+          const auto& bookmark_string_arg = std::get<std::string>(encodable_bookmark_string_arg);
+          ErrorOr<std::optional<std::string>> output = api->StartAccessingSecurityScopedResource(bookmark_string_arg);
+          if (output.has_error()) {
+            reply(WrapError(output.error()));
+            return;
+          }
+          EncodableList wrapped;
+          auto output_optional = std::move(output).TakeValue();
+          if (output_optional) {
+            wrapped.push_back(EncodableValue(std::move(output_optional).value()));
+          } else {
+            wrapped.push_back(EncodableValue());
+          }
           reply(EncodableValue(std::move(wrapped)));
         } catch (const std::exception& exception) {
           reply(WrapError(exception.what()));

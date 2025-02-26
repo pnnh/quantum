@@ -85,6 +85,77 @@ static QuantumMessageData* quantum_message_data_new_from_list(FlValue* values) {
   return quantum_message_data_new(name, description, data);
 }
 
+struct _QuantumDirectoryResponse {
+  GObject parent_instance;
+
+  gchar* absolute_url;
+  gchar* bookmark_string;
+};
+
+G_DEFINE_TYPE(QuantumDirectoryResponse, quantum_directory_response, G_TYPE_OBJECT)
+
+static void quantum_directory_response_dispose(GObject* object) {
+  QuantumDirectoryResponse* self = QUANTUM_DIRECTORY_RESPONSE(object);
+  g_clear_pointer(&self->absolute_url, g_free);
+  g_clear_pointer(&self->bookmark_string, g_free);
+  G_OBJECT_CLASS(quantum_directory_response_parent_class)->dispose(object);
+}
+
+static void quantum_directory_response_init(QuantumDirectoryResponse* self) {
+}
+
+static void quantum_directory_response_class_init(QuantumDirectoryResponseClass* klass) {
+  G_OBJECT_CLASS(klass)->dispose = quantum_directory_response_dispose;
+}
+
+QuantumDirectoryResponse* quantum_directory_response_new(const gchar* absolute_url, const gchar* bookmark_string) {
+  QuantumDirectoryResponse* self = QUANTUM_DIRECTORY_RESPONSE(g_object_new(quantum_directory_response_get_type(), nullptr));
+  if (absolute_url != nullptr) {
+    self->absolute_url = g_strdup(absolute_url);
+  }
+  else {
+    self->absolute_url = nullptr;
+  }
+  if (bookmark_string != nullptr) {
+    self->bookmark_string = g_strdup(bookmark_string);
+  }
+  else {
+    self->bookmark_string = nullptr;
+  }
+  return self;
+}
+
+const gchar* quantum_directory_response_get_absolute_url(QuantumDirectoryResponse* self) {
+  g_return_val_if_fail(QUANTUM_IS_DIRECTORY_RESPONSE(self), nullptr);
+  return self->absolute_url;
+}
+
+const gchar* quantum_directory_response_get_bookmark_string(QuantumDirectoryResponse* self) {
+  g_return_val_if_fail(QUANTUM_IS_DIRECTORY_RESPONSE(self), nullptr);
+  return self->bookmark_string;
+}
+
+static FlValue* quantum_directory_response_to_list(QuantumDirectoryResponse* self) {
+  FlValue* values = fl_value_new_list();
+  fl_value_append_take(values, self->absolute_url != nullptr ? fl_value_new_string(self->absolute_url) : fl_value_new_null());
+  fl_value_append_take(values, self->bookmark_string != nullptr ? fl_value_new_string(self->bookmark_string) : fl_value_new_null());
+  return values;
+}
+
+static QuantumDirectoryResponse* quantum_directory_response_new_from_list(FlValue* values) {
+  FlValue* value0 = fl_value_get_list_value(values, 0);
+  const gchar* absolute_url = nullptr;
+  if (fl_value_get_type(value0) != FL_VALUE_TYPE_NULL) {
+    absolute_url = fl_value_get_string(value0);
+  }
+  FlValue* value1 = fl_value_get_list_value(values, 1);
+  const gchar* bookmark_string = nullptr;
+  if (fl_value_get_type(value1) != FL_VALUE_TYPE_NULL) {
+    bookmark_string = fl_value_get_string(value1);
+  }
+  return quantum_directory_response_new(absolute_url, bookmark_string);
+}
+
 struct _QuantumMessageCodec {
   FlStandardMessageCodec parent_instance;
 
@@ -99,11 +170,20 @@ static gboolean quantum_message_codec_write_quantum_message_data(FlStandardMessa
   return fl_standard_message_codec_write_value(codec, buffer, values, error);
 }
 
+static gboolean quantum_message_codec_write_quantum_directory_response(FlStandardMessageCodec* codec, GByteArray* buffer, QuantumDirectoryResponse* value, GError** error) {
+  uint8_t type = 130;
+  g_byte_array_append(buffer, &type, sizeof(uint8_t));
+  g_autoptr(FlValue) values = quantum_directory_response_to_list(value);
+  return fl_standard_message_codec_write_value(codec, buffer, values, error);
+}
+
 static gboolean quantum_message_codec_write_value(FlStandardMessageCodec* codec, GByteArray* buffer, FlValue* value, GError** error) {
   if (fl_value_get_type(value) == FL_VALUE_TYPE_CUSTOM) {
     switch (fl_value_get_custom_type(value)) {
       case 129:
         return quantum_message_codec_write_quantum_message_data(codec, buffer, QUANTUM_MESSAGE_DATA(fl_value_get_custom_value_object(value)), error);
+      case 130:
+        return quantum_message_codec_write_quantum_directory_response(codec, buffer, QUANTUM_DIRECTORY_RESPONSE(fl_value_get_custom_value_object(value)), error);
     }
   }
 
@@ -125,10 +205,27 @@ static FlValue* quantum_message_codec_read_quantum_message_data(FlStandardMessag
   return fl_value_new_custom_object(129, G_OBJECT(value));
 }
 
+static FlValue* quantum_message_codec_read_quantum_directory_response(FlStandardMessageCodec* codec, GBytes* buffer, size_t* offset, GError** error) {
+  g_autoptr(FlValue) values = fl_standard_message_codec_read_value(codec, buffer, offset, error);
+  if (values == nullptr) {
+    return nullptr;
+  }
+
+  g_autoptr(QuantumDirectoryResponse) value = quantum_directory_response_new_from_list(values);
+  if (value == nullptr) {
+    g_set_error(error, FL_MESSAGE_CODEC_ERROR, FL_MESSAGE_CODEC_ERROR_FAILED, "Invalid data received for MessageData");
+    return nullptr;
+  }
+
+  return fl_value_new_custom_object(130, G_OBJECT(value));
+}
+
 static FlValue* quantum_message_codec_read_value_of_type(FlStandardMessageCodec* codec, GBytes* buffer, size_t* offset, int type, GError** error) {
   switch (type) {
     case 129:
       return quantum_message_codec_read_quantum_message_data(codec, buffer, offset, error);
+    case 130:
+      return quantum_message_codec_read_quantum_directory_response(codec, buffer, offset, error);
     default:
       return FL_STANDARD_MESSAGE_CODEC_CLASS(quantum_message_codec_parent_class)->read_value_of_type(codec, buffer, offset, type, error);
   }
@@ -207,6 +304,80 @@ QuantumQuantumHostApiGetHostLanguageResponse* quantum_quantum_host_api_get_host_
 
 QuantumQuantumHostApiGetHostLanguageResponse* quantum_quantum_host_api_get_host_language_response_new_error(const gchar* code, const gchar* message, FlValue* details) {
   QuantumQuantumHostApiGetHostLanguageResponse* self = QUANTUM_QUANTUM_HOST_API_GET_HOST_LANGUAGE_RESPONSE(g_object_new(quantum_quantum_host_api_get_host_language_response_get_type(), nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_string(code));
+  fl_value_append_take(self->value, fl_value_new_string(message != nullptr ? message : ""));
+  fl_value_append_take(self->value, details != nullptr ? fl_value_ref(details) : fl_value_new_null());
+  return self;
+}
+
+struct _QuantumQuantumHostApiChooseDirectoryResponse {
+  GObject parent_instance;
+
+  FlValue* value;
+};
+
+G_DEFINE_TYPE(QuantumQuantumHostApiChooseDirectoryResponse, quantum_quantum_host_api_choose_directory_response, G_TYPE_OBJECT)
+
+static void quantum_quantum_host_api_choose_directory_response_dispose(GObject* object) {
+  QuantumQuantumHostApiChooseDirectoryResponse* self = QUANTUM_QUANTUM_HOST_API_CHOOSE_DIRECTORY_RESPONSE(object);
+  g_clear_pointer(&self->value, fl_value_unref);
+  G_OBJECT_CLASS(quantum_quantum_host_api_choose_directory_response_parent_class)->dispose(object);
+}
+
+static void quantum_quantum_host_api_choose_directory_response_init(QuantumQuantumHostApiChooseDirectoryResponse* self) {
+}
+
+static void quantum_quantum_host_api_choose_directory_response_class_init(QuantumQuantumHostApiChooseDirectoryResponseClass* klass) {
+  G_OBJECT_CLASS(klass)->dispose = quantum_quantum_host_api_choose_directory_response_dispose;
+}
+
+QuantumQuantumHostApiChooseDirectoryResponse* quantum_quantum_host_api_choose_directory_response_new(QuantumDirectoryResponse* return_value) {
+  QuantumQuantumHostApiChooseDirectoryResponse* self = QUANTUM_QUANTUM_HOST_API_CHOOSE_DIRECTORY_RESPONSE(g_object_new(quantum_quantum_host_api_choose_directory_response_get_type(), nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, return_value != nullptr ? fl_value_new_custom_object(130, G_OBJECT(return_value)) : fl_value_new_null());
+  return self;
+}
+
+QuantumQuantumHostApiChooseDirectoryResponse* quantum_quantum_host_api_choose_directory_response_new_error(const gchar* code, const gchar* message, FlValue* details) {
+  QuantumQuantumHostApiChooseDirectoryResponse* self = QUANTUM_QUANTUM_HOST_API_CHOOSE_DIRECTORY_RESPONSE(g_object_new(quantum_quantum_host_api_choose_directory_response_get_type(), nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_string(code));
+  fl_value_append_take(self->value, fl_value_new_string(message != nullptr ? message : ""));
+  fl_value_append_take(self->value, details != nullptr ? fl_value_ref(details) : fl_value_new_null());
+  return self;
+}
+
+struct _QuantumQuantumHostApiStartAccessingSecurityScopedResourceResponse {
+  GObject parent_instance;
+
+  FlValue* value;
+};
+
+G_DEFINE_TYPE(QuantumQuantumHostApiStartAccessingSecurityScopedResourceResponse, quantum_quantum_host_api_start_accessing_security_scoped_resource_response, G_TYPE_OBJECT)
+
+static void quantum_quantum_host_api_start_accessing_security_scoped_resource_response_dispose(GObject* object) {
+  QuantumQuantumHostApiStartAccessingSecurityScopedResourceResponse* self = QUANTUM_QUANTUM_HOST_API_START_ACCESSING_SECURITY_SCOPED_RESOURCE_RESPONSE(object);
+  g_clear_pointer(&self->value, fl_value_unref);
+  G_OBJECT_CLASS(quantum_quantum_host_api_start_accessing_security_scoped_resource_response_parent_class)->dispose(object);
+}
+
+static void quantum_quantum_host_api_start_accessing_security_scoped_resource_response_init(QuantumQuantumHostApiStartAccessingSecurityScopedResourceResponse* self) {
+}
+
+static void quantum_quantum_host_api_start_accessing_security_scoped_resource_response_class_init(QuantumQuantumHostApiStartAccessingSecurityScopedResourceResponseClass* klass) {
+  G_OBJECT_CLASS(klass)->dispose = quantum_quantum_host_api_start_accessing_security_scoped_resource_response_dispose;
+}
+
+QuantumQuantumHostApiStartAccessingSecurityScopedResourceResponse* quantum_quantum_host_api_start_accessing_security_scoped_resource_response_new(const gchar* return_value) {
+  QuantumQuantumHostApiStartAccessingSecurityScopedResourceResponse* self = QUANTUM_QUANTUM_HOST_API_START_ACCESSING_SECURITY_SCOPED_RESOURCE_RESPONSE(g_object_new(quantum_quantum_host_api_start_accessing_security_scoped_resource_response_get_type(), nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, return_value != nullptr ? fl_value_new_string(return_value) : fl_value_new_null());
+  return self;
+}
+
+QuantumQuantumHostApiStartAccessingSecurityScopedResourceResponse* quantum_quantum_host_api_start_accessing_security_scoped_resource_response_new_error(const gchar* code, const gchar* message, FlValue* details) {
+  QuantumQuantumHostApiStartAccessingSecurityScopedResourceResponse* self = QUANTUM_QUANTUM_HOST_API_START_ACCESSING_SECURITY_SCOPED_RESOURCE_RESPONSE(g_object_new(quantum_quantum_host_api_start_accessing_security_scoped_resource_response_get_type(), nullptr));
   self->value = fl_value_new_list();
   fl_value_append_take(self->value, fl_value_new_string(code));
   fl_value_append_take(self->value, fl_value_new_string(message != nullptr ? message : ""));
@@ -343,6 +514,46 @@ static void quantum_quantum_host_api_get_host_language_cb(FlBasicMessageChannel*
   }
 }
 
+static void quantum_quantum_host_api_choose_directory_cb(FlBasicMessageChannel* channel, FlValue* message_, FlBasicMessageChannelResponseHandle* response_handle, gpointer user_data) {
+  QuantumQuantumHostApi* self = QUANTUM_QUANTUM_HOST_API(user_data);
+
+  if (self->vtable == nullptr || self->vtable->choose_directory == nullptr) {
+    return;
+  }
+
+  g_autoptr(QuantumQuantumHostApiChooseDirectoryResponse) response = self->vtable->choose_directory(self->user_data);
+  if (response == nullptr) {
+    g_warning("No response returned to %s.%s", "QuantumHostApi", "chooseDirectory");
+    return;
+  }
+
+  g_autoptr(GError) error = NULL;
+  if (!fl_basic_message_channel_respond(channel, response_handle, response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "QuantumHostApi", "chooseDirectory", error->message);
+  }
+}
+
+static void quantum_quantum_host_api_start_accessing_security_scoped_resource_cb(FlBasicMessageChannel* channel, FlValue* message_, FlBasicMessageChannelResponseHandle* response_handle, gpointer user_data) {
+  QuantumQuantumHostApi* self = QUANTUM_QUANTUM_HOST_API(user_data);
+
+  if (self->vtable == nullptr || self->vtable->start_accessing_security_scoped_resource == nullptr) {
+    return;
+  }
+
+  FlValue* value0 = fl_value_get_list_value(message_, 0);
+  const gchar* bookmark_string = fl_value_get_string(value0);
+  g_autoptr(QuantumQuantumHostApiStartAccessingSecurityScopedResourceResponse) response = self->vtable->start_accessing_security_scoped_resource(bookmark_string, self->user_data);
+  if (response == nullptr) {
+    g_warning("No response returned to %s.%s", "QuantumHostApi", "startAccessingSecurityScopedResource");
+    return;
+  }
+
+  g_autoptr(GError) error = NULL;
+  if (!fl_basic_message_channel_respond(channel, response_handle, response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "QuantumHostApi", "startAccessingSecurityScopedResource", error->message);
+  }
+}
+
 static void quantum_quantum_host_api_add_cb(FlBasicMessageChannel* channel, FlValue* message_, FlBasicMessageChannelResponseHandle* response_handle, gpointer user_data) {
   QuantumQuantumHostApi* self = QUANTUM_QUANTUM_HOST_API(user_data);
 
@@ -387,6 +598,12 @@ void quantum_quantum_host_api_set_method_handlers(FlBinaryMessenger* messenger, 
   g_autofree gchar* get_host_language_channel_name = g_strdup_printf("dev.flutter.pigeon.quantum.QuantumHostApi.getHostLanguage%s", dot_suffix);
   g_autoptr(FlBasicMessageChannel) get_host_language_channel = fl_basic_message_channel_new(messenger, get_host_language_channel_name, FL_MESSAGE_CODEC(codec));
   fl_basic_message_channel_set_message_handler(get_host_language_channel, quantum_quantum_host_api_get_host_language_cb, g_object_ref(api_data), g_object_unref);
+  g_autofree gchar* choose_directory_channel_name = g_strdup_printf("dev.flutter.pigeon.quantum.QuantumHostApi.chooseDirectory%s", dot_suffix);
+  g_autoptr(FlBasicMessageChannel) choose_directory_channel = fl_basic_message_channel_new(messenger, choose_directory_channel_name, FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(choose_directory_channel, quantum_quantum_host_api_choose_directory_cb, g_object_ref(api_data), g_object_unref);
+  g_autofree gchar* start_accessing_security_scoped_resource_channel_name = g_strdup_printf("dev.flutter.pigeon.quantum.QuantumHostApi.startAccessingSecurityScopedResource%s", dot_suffix);
+  g_autoptr(FlBasicMessageChannel) start_accessing_security_scoped_resource_channel = fl_basic_message_channel_new(messenger, start_accessing_security_scoped_resource_channel_name, FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(start_accessing_security_scoped_resource_channel, quantum_quantum_host_api_start_accessing_security_scoped_resource_cb, g_object_ref(api_data), g_object_unref);
   g_autofree gchar* add_channel_name = g_strdup_printf("dev.flutter.pigeon.quantum.QuantumHostApi.add%s", dot_suffix);
   g_autoptr(FlBasicMessageChannel) add_channel = fl_basic_message_channel_new(messenger, add_channel_name, FL_MESSAGE_CODEC(codec));
   fl_basic_message_channel_set_message_handler(add_channel, quantum_quantum_host_api_add_cb, g_object_ref(api_data), g_object_unref);
@@ -402,6 +619,12 @@ void quantum_quantum_host_api_clear_method_handlers(FlBinaryMessenger* messenger
   g_autofree gchar* get_host_language_channel_name = g_strdup_printf("dev.flutter.pigeon.quantum.QuantumHostApi.getHostLanguage%s", dot_suffix);
   g_autoptr(FlBasicMessageChannel) get_host_language_channel = fl_basic_message_channel_new(messenger, get_host_language_channel_name, FL_MESSAGE_CODEC(codec));
   fl_basic_message_channel_set_message_handler(get_host_language_channel, nullptr, nullptr, nullptr);
+  g_autofree gchar* choose_directory_channel_name = g_strdup_printf("dev.flutter.pigeon.quantum.QuantumHostApi.chooseDirectory%s", dot_suffix);
+  g_autoptr(FlBasicMessageChannel) choose_directory_channel = fl_basic_message_channel_new(messenger, choose_directory_channel_name, FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(choose_directory_channel, nullptr, nullptr, nullptr);
+  g_autofree gchar* start_accessing_security_scoped_resource_channel_name = g_strdup_printf("dev.flutter.pigeon.quantum.QuantumHostApi.startAccessingSecurityScopedResource%s", dot_suffix);
+  g_autoptr(FlBasicMessageChannel) start_accessing_security_scoped_resource_channel = fl_basic_message_channel_new(messenger, start_accessing_security_scoped_resource_channel_name, FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(start_accessing_security_scoped_resource_channel, nullptr, nullptr, nullptr);
   g_autofree gchar* add_channel_name = g_strdup_printf("dev.flutter.pigeon.quantum.QuantumHostApi.add%s", dot_suffix);
   g_autoptr(FlBasicMessageChannel) add_channel = fl_basic_message_channel_new(messenger, add_channel_name, FL_MESSAGE_CODEC(codec));
   fl_basic_message_channel_set_message_handler(add_channel, nullptr, nullptr, nullptr);

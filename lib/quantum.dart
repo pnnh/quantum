@@ -22,13 +22,13 @@ class Quantum {
     return version;
   }
 
-  static Future<String?> chooseFiles() async {
-    String? files = await _channel.invokeMethod("chooseFiles");
-    if (files != null) {
-      files = Uri.decodeFull(files);
-    }
-    return files;
-  }
+  // static Future<String?> chooseFiles() async {
+  //   String? files = await _channel.invokeMethod("chooseFiles");
+  //   if (files != null) {
+  //     files = Uri.decodeFull(files);
+  //   }
+  //   return files;
+  // }
 
   static Future<String?> getHostLanguage() async {
     var hostApi = QuantumHostApi();

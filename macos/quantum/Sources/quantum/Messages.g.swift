@@ -92,11 +92,37 @@ struct MessageData {
   }
 }
 
+/// Generated class from Pigeon that represents data sent in messages.
+struct DirectoryResponse {
+  var absoluteUrl: String? = nil
+  var bookmarkString: String? = nil
+
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> DirectoryResponse? {
+    let absoluteUrl: String? = nilOrValue(pigeonVar_list[0])
+    let bookmarkString: String? = nilOrValue(pigeonVar_list[1])
+
+    return DirectoryResponse(
+      absoluteUrl: absoluteUrl,
+      bookmarkString: bookmarkString
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      absoluteUrl,
+      bookmarkString,
+    ]
+  }
+}
+
 private class MessagesPigeonCodecReader: FlutterStandardReader {
   override func readValue(ofType type: UInt8) -> Any? {
     switch type {
     case 129:
       return MessageData.fromList(self.readValue() as! [Any?])
+    case 130:
+      return DirectoryResponse.fromList(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
     }
@@ -107,6 +133,9 @@ private class MessagesPigeonCodecWriter: FlutterStandardWriter {
   override func writeValue(_ value: Any) {
     if let value = value as? MessageData {
       super.writeByte(129)
+      super.writeValue(value.toList())
+    } else if let value = value as? DirectoryResponse {
+      super.writeByte(130)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
@@ -132,6 +161,8 @@ class MessagesPigeonCodec: FlutterStandardMessageCodec, @unchecked Sendable {
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
 protocol QuantumHostApi {
   func getHostLanguage() throws -> String
+  func chooseDirectory() throws -> DirectoryResponse?
+  func startAccessingSecurityScopedResource(bookmarkString: String) throws -> String?
   func add(_ a: Int64, to b: Int64) throws -> Int64
   func sendMessage(message: MessageData, completion: @escaping (Result<Bool, Error>) -> Void)
 }
@@ -154,6 +185,34 @@ class QuantumHostApiSetup {
       }
     } else {
       getHostLanguageChannel.setMessageHandler(nil)
+    }
+    let chooseDirectoryChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.quantum.QuantumHostApi.chooseDirectory\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      chooseDirectoryChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.chooseDirectory()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      chooseDirectoryChannel.setMessageHandler(nil)
+    }
+    let startAccessingSecurityScopedResourceChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.quantum.QuantumHostApi.startAccessingSecurityScopedResource\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      startAccessingSecurityScopedResourceChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let bookmarkStringArg = args[0] as! String
+        do {
+          let result = try api.startAccessingSecurityScopedResource(bookmarkString: bookmarkStringArg)
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      startAccessingSecurityScopedResourceChannel.setMessageHandler(nil)
     }
     let addChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.quantum.QuantumHostApi.add\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {

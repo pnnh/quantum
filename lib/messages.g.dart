@@ -46,6 +46,32 @@ class MessageData {
   }
 }
 
+class DirectoryResponse {
+  DirectoryResponse({
+    this.absoluteUrl,
+    this.bookmarkString,
+  });
+
+  String? absoluteUrl;
+
+  String? bookmarkString;
+
+  Object encode() {
+    return <Object?>[
+      absoluteUrl,
+      bookmarkString,
+    ];
+  }
+
+  static DirectoryResponse decode(Object result) {
+    result as List<Object?>;
+    return DirectoryResponse(
+      absoluteUrl: result[0] as String?,
+      bookmarkString: result[1] as String?,
+    );
+  }
+}
+
 
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
@@ -57,6 +83,9 @@ class _PigeonCodec extends StandardMessageCodec {
     }    else if (value is MessageData) {
       buffer.putUint8(129);
       writeValue(buffer, value.encode());
+    }    else if (value is DirectoryResponse) {
+      buffer.putUint8(130);
+      writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
     }
@@ -67,6 +96,8 @@ class _PigeonCodec extends StandardMessageCodec {
     switch (type) {
       case 129: 
         return MessageData.decode(readValue(buffer)!);
+      case 130: 
+        return DirectoryResponse.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
     }
@@ -111,6 +142,52 @@ class QuantumHostApi {
       );
     } else {
       return (pigeonVar_replyList[0] as String?)!;
+    }
+  }
+
+  Future<DirectoryResponse?> chooseDirectory() async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.quantum.QuantumHostApi.chooseDirectory$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_sendFuture as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
+      throw PlatformException(
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
+      );
+    } else {
+      return (pigeonVar_replyList[0] as DirectoryResponse?);
+    }
+  }
+
+  Future<String?> startAccessingSecurityScopedResource(String bookmarkString) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.quantum.QuantumHostApi.startAccessingSecurityScopedResource$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[bookmarkString]);
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_sendFuture as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
+      throw PlatformException(
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
+      );
+    } else {
+      return (pigeonVar_replyList[0] as String?);
     }
   }
 

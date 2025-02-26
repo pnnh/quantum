@@ -23,9 +23,16 @@ class MessageData {
   Map<String, String> data;
 }
 
+class DirectoryResponse {
+  String? absoluteUrl;
+  String? bookmarkString;
+}
+
 @HostApi()
 abstract class QuantumHostApi {
   String getHostLanguage();
+  DirectoryResponse? chooseDirectory();
+  String? startAccessingSecurityScopedResource(String bookmarkString);
 
   @SwiftFunction('add(_:to:)')
   int add(int a, int b);

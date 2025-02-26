@@ -18,3 +18,12 @@ cmake --install build/macOS --config Release
 ```bash
 dart run ffigen
 ```
+
+## 生成模型
+
+```shell
+# 生成JSON等序列化模型
+dart run build_runner build --delete-conflicting-outputs
+# 生成pigeon代码存根
+dart run pigeon --input src/pigeon.dart
+```

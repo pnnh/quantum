@@ -57,6 +57,44 @@ const gchar* quantum_message_data_get_description(QuantumMessageData* object);
  */
 FlValue* quantum_message_data_get_data(QuantumMessageData* object);
 
+/**
+ * QuantumDirectoryResponse:
+ *
+ */
+
+G_DECLARE_FINAL_TYPE(QuantumDirectoryResponse, quantum_directory_response, QUANTUM, DIRECTORY_RESPONSE, GObject)
+
+/**
+ * quantum_directory_response_new:
+ * absolute_url: field in this object.
+ * bookmark_string: field in this object.
+ *
+ * Creates a new #DirectoryResponse object.
+ *
+ * Returns: a new #QuantumDirectoryResponse
+ */
+QuantumDirectoryResponse* quantum_directory_response_new(const gchar* absolute_url, const gchar* bookmark_string);
+
+/**
+ * quantum_directory_response_get_absolute_url
+ * @object: a #QuantumDirectoryResponse.
+ *
+ * Gets the value of the absoluteUrl field of @object.
+ *
+ * Returns: the field value.
+ */
+const gchar* quantum_directory_response_get_absolute_url(QuantumDirectoryResponse* object);
+
+/**
+ * quantum_directory_response_get_bookmark_string
+ * @object: a #QuantumDirectoryResponse.
+ *
+ * Gets the value of the bookmarkString field of @object.
+ *
+ * Returns: the field value.
+ */
+const gchar* quantum_directory_response_get_bookmark_string(QuantumDirectoryResponse* object);
+
 G_DECLARE_FINAL_TYPE(QuantumMessageCodec, quantum_message_codec, QUANTUM, MESSAGE_CODEC, FlStandardMessageCodec)
 
 G_DECLARE_FINAL_TYPE(QuantumQuantumHostApi, quantum_quantum_host_api, QUANTUM, QUANTUM_HOST_API, GObject)
@@ -85,6 +123,52 @@ QuantumQuantumHostApiGetHostLanguageResponse* quantum_quantum_host_api_get_host_
  * Returns: a new #QuantumQuantumHostApiGetHostLanguageResponse
  */
 QuantumQuantumHostApiGetHostLanguageResponse* quantum_quantum_host_api_get_host_language_response_new_error(const gchar* code, const gchar* message, FlValue* details);
+
+G_DECLARE_FINAL_TYPE(QuantumQuantumHostApiChooseDirectoryResponse, quantum_quantum_host_api_choose_directory_response, QUANTUM, QUANTUM_HOST_API_CHOOSE_DIRECTORY_RESPONSE, GObject)
+
+/**
+ * quantum_quantum_host_api_choose_directory_response_new:
+ *
+ * Creates a new response to QuantumHostApi.chooseDirectory.
+ *
+ * Returns: a new #QuantumQuantumHostApiChooseDirectoryResponse
+ */
+QuantumQuantumHostApiChooseDirectoryResponse* quantum_quantum_host_api_choose_directory_response_new(QuantumDirectoryResponse* return_value);
+
+/**
+ * quantum_quantum_host_api_choose_directory_response_new_error:
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Creates a new error response to QuantumHostApi.chooseDirectory.
+ *
+ * Returns: a new #QuantumQuantumHostApiChooseDirectoryResponse
+ */
+QuantumQuantumHostApiChooseDirectoryResponse* quantum_quantum_host_api_choose_directory_response_new_error(const gchar* code, const gchar* message, FlValue* details);
+
+G_DECLARE_FINAL_TYPE(QuantumQuantumHostApiStartAccessingSecurityScopedResourceResponse, quantum_quantum_host_api_start_accessing_security_scoped_resource_response, QUANTUM, QUANTUM_HOST_API_START_ACCESSING_SECURITY_SCOPED_RESOURCE_RESPONSE, GObject)
+
+/**
+ * quantum_quantum_host_api_start_accessing_security_scoped_resource_response_new:
+ *
+ * Creates a new response to QuantumHostApi.startAccessingSecurityScopedResource.
+ *
+ * Returns: a new #QuantumQuantumHostApiStartAccessingSecurityScopedResourceResponse
+ */
+QuantumQuantumHostApiStartAccessingSecurityScopedResourceResponse* quantum_quantum_host_api_start_accessing_security_scoped_resource_response_new(const gchar* return_value);
+
+/**
+ * quantum_quantum_host_api_start_accessing_security_scoped_resource_response_new_error:
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Creates a new error response to QuantumHostApi.startAccessingSecurityScopedResource.
+ *
+ * Returns: a new #QuantumQuantumHostApiStartAccessingSecurityScopedResourceResponse
+ */
+QuantumQuantumHostApiStartAccessingSecurityScopedResourceResponse* quantum_quantum_host_api_start_accessing_security_scoped_resource_response_new_error(const gchar* code, const gchar* message, FlValue* details);
 
 G_DECLARE_FINAL_TYPE(QuantumQuantumHostApiAddResponse, quantum_quantum_host_api_add_response, QUANTUM, QUANTUM_HOST_API_ADD_RESPONSE, GObject)
 
@@ -116,6 +200,8 @@ QuantumQuantumHostApiAddResponse* quantum_quantum_host_api_add_response_new_erro
  */
 typedef struct {
   QuantumQuantumHostApiGetHostLanguageResponse* (*get_host_language)(gpointer user_data);
+  QuantumQuantumHostApiChooseDirectoryResponse* (*choose_directory)(gpointer user_data);
+  QuantumQuantumHostApiStartAccessingSecurityScopedResourceResponse* (*start_accessing_security_scoped_resource)(const gchar* bookmark_string, gpointer user_data);
   QuantumQuantumHostApiAddResponse* (*add)(int64_t a, int64_t b, gpointer user_data);
   void (*send_message)(QuantumMessageData* message, QuantumQuantumHostApiResponseHandle* response_handle, gpointer user_data);
 } QuantumQuantumHostApiVTable;
