@@ -8,7 +8,7 @@ public class QuantumHostApiImpl : QuantumHostApi {
     func add(_ a: Int64, to b: Int64) throws -> Int64 {
         return a + b;
     }
-    func sendMessage(message: MessageData, completion: @escaping (Result<Bool, Error>) -> Void) {
+    func sendMessage(message: String, completion: @escaping (Result<Bool, Error>) -> Void) {
         completion(.success(true))
     }
     
