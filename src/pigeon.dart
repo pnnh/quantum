@@ -15,14 +15,6 @@ import 'package:pigeon/pigeon.dart';
   swiftOptions: SwiftOptions(),
   dartPackageName: 'quantum',
 ))
-class MessageData {
-  MessageData({required this.data});
-
-  String? name;
-  String? description;
-  Map<String, String> data;
-}
-
 class DirectoryResponse {
   String? absoluteUrl;
   String? bookmarkString;
@@ -31,12 +23,14 @@ class DirectoryResponse {
 @HostApi()
 abstract class QuantumHostApi {
   String getHostLanguage();
+
   DirectoryResponse? chooseDirectory();
+
   String? startAccessingSecurityScopedResource(String bookmarkString);
 
   @SwiftFunction('add(_:to:)')
   int add(int a, int b);
 
   @async
-  bool sendMessage(MessageData message);
+  bool sendMessage(String message);
 }

@@ -28,77 +28,6 @@ FlutterError CreateConnectionError(const std::string channel_name) {
       EncodableValue(""));
 }
 
-// MessageData
-
-MessageData::MessageData(const EncodableMap& data)
- : data_(data) {}
-
-MessageData::MessageData(
-  const std::string* name,
-  const std::string* description,
-  const EncodableMap& data)
- : name_(name ? std::optional<std::string>(*name) : std::nullopt),
-    description_(description ? std::optional<std::string>(*description) : std::nullopt),
-    data_(data) {}
-
-const std::string* MessageData::name() const {
-  return name_ ? &(*name_) : nullptr;
-}
-
-void MessageData::set_name(const std::string_view* value_arg) {
-  name_ = value_arg ? std::optional<std::string>(*value_arg) : std::nullopt;
-}
-
-void MessageData::set_name(std::string_view value_arg) {
-  name_ = value_arg;
-}
-
-
-const std::string* MessageData::description() const {
-  return description_ ? &(*description_) : nullptr;
-}
-
-void MessageData::set_description(const std::string_view* value_arg) {
-  description_ = value_arg ? std::optional<std::string>(*value_arg) : std::nullopt;
-}
-
-void MessageData::set_description(std::string_view value_arg) {
-  description_ = value_arg;
-}
-
-
-const EncodableMap& MessageData::data() const {
-  return data_;
-}
-
-void MessageData::set_data(const EncodableMap& value_arg) {
-  data_ = value_arg;
-}
-
-
-EncodableList MessageData::ToEncodableList() const {
-  EncodableList list;
-  list.reserve(3);
-  list.push_back(name_ ? EncodableValue(*name_) : EncodableValue());
-  list.push_back(description_ ? EncodableValue(*description_) : EncodableValue());
-  list.push_back(EncodableValue(data_));
-  return list;
-}
-
-MessageData MessageData::FromEncodableList(const EncodableList& list) {
-  MessageData decoded(
-    std::get<EncodableMap>(list[2]));
-  auto& encodable_name = list[0];
-  if (!encodable_name.IsNull()) {
-    decoded.set_name(std::get<std::string>(encodable_name));
-  }
-  auto& encodable_description = list[1];
-  if (!encodable_description.IsNull()) {
-    decoded.set_description(std::get<std::string>(encodable_description));
-  }
-  return decoded;
-}
-
 // DirectoryResponse
 
 DirectoryResponse::DirectoryResponse() {}
@@ -164,9 +93,6 @@ EncodableValue PigeonInternalCodecSerializer::ReadValueOfType(
   flutter::ByteStreamReader* stream) const {
   switch (type) {
     case 129: {
-        return CustomEncodableValue(MessageData::FromEncodableList(std::get<EncodableList>(ReadValue(stream))));
-      }
-    case 130: {
         return CustomEncodableValue(DirectoryResponse::FromEncodableList(std::get<EncodableList>(ReadValue(stream))));
       }
     default:
@@ -178,13 +104,8 @@ void PigeonInternalCodecSerializer::WriteValue(
   const EncodableValue& value,
   flutter::ByteStreamWriter* stream) const {
   if (const CustomEncodableValue* custom_value = std::get_if<CustomEncodableValue>(&value)) {
-    if (custom_value->type() == typeid(MessageData)) {
-      stream->WriteByte(129);
-      WriteValue(EncodableValue(std::any_cast<MessageData>(*custom_value).ToEncodableList()), stream);
-      return;
-    }
     if (custom_value->type() == typeid(DirectoryResponse)) {
-      stream->WriteByte(130);
+      stream->WriteByte(129);
       WriteValue(EncodableValue(std::any_cast<DirectoryResponse>(*custom_value).ToEncodableList()), stream);
       return;
     }
@@ -334,7 +255,7 @@ void QuantumHostApi::SetUp(
             reply(WrapError("message_arg unexpectedly null."));
             return;
           }
-          const auto& message_arg = std::any_cast<const MessageData&>(std::get<CustomEncodableValue>(encodable_message_arg));
+          const auto& message_arg = std::get<std::string>(encodable_message_arg);
           api->SendMessage(message_arg, [reply](ErrorOr<bool>&& output) {
             if (output.has_error()) {
               reply(WrapError(output.error()));

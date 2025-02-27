@@ -15,37 +15,6 @@ PlatformException _createConnectionError(String channelName) {
   );
 }
 
-class MessageData {
-  MessageData({
-    this.name,
-    this.description,
-    required this.data,
-  });
-
-  String? name;
-
-  String? description;
-
-  Map<String, String> data;
-
-  Object encode() {
-    return <Object?>[
-      name,
-      description,
-      data,
-    ];
-  }
-
-  static MessageData decode(Object result) {
-    result as List<Object?>;
-    return MessageData(
-      name: result[0] as String?,
-      description: result[1] as String?,
-      data: (result[2] as Map<Object?, Object?>?)!.cast<String, String>(),
-    );
-  }
-}
-
 class DirectoryResponse {
   DirectoryResponse({
     this.absoluteUrl,
@@ -80,11 +49,8 @@ class _PigeonCodec extends StandardMessageCodec {
     if (value is int) {
       buffer.putUint8(4);
       buffer.putInt64(value);
-    }    else if (value is MessageData) {
-      buffer.putUint8(129);
-      writeValue(buffer, value.encode());
     }    else if (value is DirectoryResponse) {
-      buffer.putUint8(130);
+      buffer.putUint8(129);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -95,8 +61,6 @@ class _PigeonCodec extends StandardMessageCodec {
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
       case 129: 
-        return MessageData.decode(readValue(buffer)!);
-      case 130: 
         return DirectoryResponse.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -219,7 +183,7 @@ class QuantumHostApi {
     }
   }
 
-  Future<bool> sendMessage(MessageData message) async {
+  Future<bool> sendMessage(String message) async {
     final String pigeonVar_channelName = 'dev.flutter.pigeon.quantum.QuantumHostApi.sendMessage$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,

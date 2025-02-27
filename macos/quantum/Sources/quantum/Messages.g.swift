@@ -65,34 +65,6 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
 }
 
 /// Generated class from Pigeon that represents data sent in messages.
-struct MessageData {
-  var name: String? = nil
-  var description: String? = nil
-  var data: [String: String]
-
-
-  // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromList(_ pigeonVar_list: [Any?]) -> MessageData? {
-    let name: String? = nilOrValue(pigeonVar_list[0])
-    let description: String? = nilOrValue(pigeonVar_list[1])
-    let data = pigeonVar_list[2] as! [String: String]
-
-    return MessageData(
-      name: name,
-      description: description,
-      data: data
-    )
-  }
-  func toList() -> [Any?] {
-    return [
-      name,
-      description,
-      data,
-    ]
-  }
-}
-
-/// Generated class from Pigeon that represents data sent in messages.
 struct DirectoryResponse {
   var absoluteUrl: String? = nil
   var bookmarkString: String? = nil
@@ -120,8 +92,6 @@ private class MessagesPigeonCodecReader: FlutterStandardReader {
   override func readValue(ofType type: UInt8) -> Any? {
     switch type {
     case 129:
-      return MessageData.fromList(self.readValue() as! [Any?])
-    case 130:
       return DirectoryResponse.fromList(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
@@ -131,11 +101,8 @@ private class MessagesPigeonCodecReader: FlutterStandardReader {
 
 private class MessagesPigeonCodecWriter: FlutterStandardWriter {
   override func writeValue(_ value: Any) {
-    if let value = value as? MessageData {
+    if let value = value as? DirectoryResponse {
       super.writeByte(129)
-      super.writeValue(value.toList())
-    } else if let value = value as? DirectoryResponse {
-      super.writeByte(130)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
@@ -164,7 +131,7 @@ protocol QuantumHostApi {
   func chooseDirectory() throws -> DirectoryResponse?
   func startAccessingSecurityScopedResource(bookmarkString: String) throws -> String?
   func add(_ a: Int64, to b: Int64) throws -> Int64
-  func sendMessage(message: MessageData, completion: @escaping (Result<Bool, Error>) -> Void)
+  func sendMessage(message: String, completion: @escaping (Result<Bool, Error>) -> Void)
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
@@ -234,7 +201,7 @@ class QuantumHostApiSetup {
     if let api = api {
       sendMessageChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
-        let messageArg = args[0] as! MessageData
+        let messageArg = args[0] as! String
         api.sendMessage(message: messageArg) { result in
           switch result {
           case .success(let res):

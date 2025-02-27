@@ -46,30 +46,6 @@ class FlutterError (
 ) : Throwable()
 
 /** Generated class from Pigeon that represents data sent in messages. */
-data class MessageData (
-  val name: String? = null,
-  val description: String? = null,
-  val data: Map<String, String>
-)
- {
-  companion object {
-    fun fromList(pigeonVar_list: List<Any?>): MessageData {
-      val name = pigeonVar_list[0] as String?
-      val description = pigeonVar_list[1] as String?
-      val data = pigeonVar_list[2] as Map<String, String>
-      return MessageData(name, description, data)
-    }
-  }
-  fun toList(): List<Any?> {
-    return listOf(
-      name,
-      description,
-      data,
-    )
-  }
-}
-
-/** Generated class from Pigeon that represents data sent in messages. */
 data class DirectoryResponse (
   val absoluteUrl: String? = null,
   val bookmarkString: String? = null
@@ -94,11 +70,6 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
     return when (type) {
       129.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          MessageData.fromList(it)
-        }
-      }
-      130.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let {
           DirectoryResponse.fromList(it)
         }
       }
@@ -107,12 +78,8 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
   }
   override fun writeValue(stream: ByteArrayOutputStream, value: Any?)   {
     when (value) {
-      is MessageData -> {
-        stream.write(129)
-        writeValue(stream, value.toList())
-      }
       is DirectoryResponse -> {
-        stream.write(130)
+        stream.write(129)
         writeValue(stream, value.toList())
       }
       else -> super.writeValue(stream, value)
@@ -127,7 +94,7 @@ interface QuantumHostApi {
   fun chooseDirectory(): DirectoryResponse?
   fun startAccessingSecurityScopedResource(bookmarkString: String): String?
   fun add(a: Long, b: Long): Long
-  fun sendMessage(message: MessageData, callback: (Result<Boolean>) -> Unit)
+  fun sendMessage(message: String, callback: (Result<Boolean>) -> Unit)
 
   companion object {
     /** The codec used by QuantumHostApi. */
@@ -208,7 +175,7 @@ interface QuantumHostApi {
         if (api != null) {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
-            val messageArg = args[0] as MessageData
+            val messageArg = args[0] as String
             api.sendMessage(messageArg) { result: Result<Boolean> ->
               val error = result.exceptionOrNull()
               if (error != null) {

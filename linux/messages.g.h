@@ -9,55 +9,6 @@
 G_BEGIN_DECLS
 
 /**
- * QuantumMessageData:
- *
- */
-
-G_DECLARE_FINAL_TYPE(QuantumMessageData, quantum_message_data, QUANTUM, MESSAGE_DATA, GObject)
-
-/**
- * quantum_message_data_new:
- * name: field in this object.
- * description: field in this object.
- * data: field in this object.
- *
- * Creates a new #MessageData object.
- *
- * Returns: a new #QuantumMessageData
- */
-QuantumMessageData* quantum_message_data_new(const gchar* name, const gchar* description, FlValue* data);
-
-/**
- * quantum_message_data_get_name
- * @object: a #QuantumMessageData.
- *
- * Gets the value of the name field of @object.
- *
- * Returns: the field value.
- */
-const gchar* quantum_message_data_get_name(QuantumMessageData* object);
-
-/**
- * quantum_message_data_get_description
- * @object: a #QuantumMessageData.
- *
- * Gets the value of the description field of @object.
- *
- * Returns: the field value.
- */
-const gchar* quantum_message_data_get_description(QuantumMessageData* object);
-
-/**
- * quantum_message_data_get_data
- * @object: a #QuantumMessageData.
- *
- * Gets the value of the data field of @object.
- *
- * Returns: the field value.
- */
-FlValue* quantum_message_data_get_data(QuantumMessageData* object);
-
-/**
  * QuantumDirectoryResponse:
  *
  */
@@ -203,7 +154,7 @@ typedef struct {
   QuantumQuantumHostApiChooseDirectoryResponse* (*choose_directory)(gpointer user_data);
   QuantumQuantumHostApiStartAccessingSecurityScopedResourceResponse* (*start_accessing_security_scoped_resource)(const gchar* bookmark_string, gpointer user_data);
   QuantumQuantumHostApiAddResponse* (*add)(int64_t a, int64_t b, gpointer user_data);
-  void (*send_message)(QuantumMessageData* message, QuantumQuantumHostApiResponseHandle* response_handle, gpointer user_data);
+  void (*send_message)(const gchar* message, QuantumQuantumHostApiResponseHandle* response_handle, gpointer user_data);
 } QuantumQuantumHostApiVTable;
 
 /**

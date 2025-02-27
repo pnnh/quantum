@@ -3,88 +3,6 @@
 
 #include "messages.g.h"
 
-struct _QuantumMessageData {
-  GObject parent_instance;
-
-  gchar* name;
-  gchar* description;
-  FlValue* data;
-};
-
-G_DEFINE_TYPE(QuantumMessageData, quantum_message_data, G_TYPE_OBJECT)
-
-static void quantum_message_data_dispose(GObject* object) {
-  QuantumMessageData* self = QUANTUM_MESSAGE_DATA(object);
-  g_clear_pointer(&self->name, g_free);
-  g_clear_pointer(&self->description, g_free);
-  g_clear_pointer(&self->data, fl_value_unref);
-  G_OBJECT_CLASS(quantum_message_data_parent_class)->dispose(object);
-}
-
-static void quantum_message_data_init(QuantumMessageData* self) {
-}
-
-static void quantum_message_data_class_init(QuantumMessageDataClass* klass) {
-  G_OBJECT_CLASS(klass)->dispose = quantum_message_data_dispose;
-}
-
-QuantumMessageData* quantum_message_data_new(const gchar* name, const gchar* description, FlValue* data) {
-  QuantumMessageData* self = QUANTUM_MESSAGE_DATA(g_object_new(quantum_message_data_get_type(), nullptr));
-  if (name != nullptr) {
-    self->name = g_strdup(name);
-  }
-  else {
-    self->name = nullptr;
-  }
-  if (description != nullptr) {
-    self->description = g_strdup(description);
-  }
-  else {
-    self->description = nullptr;
-  }
-  self->data = fl_value_ref(data);
-  return self;
-}
-
-const gchar* quantum_message_data_get_name(QuantumMessageData* self) {
-  g_return_val_if_fail(QUANTUM_IS_MESSAGE_DATA(self), nullptr);
-  return self->name;
-}
-
-const gchar* quantum_message_data_get_description(QuantumMessageData* self) {
-  g_return_val_if_fail(QUANTUM_IS_MESSAGE_DATA(self), nullptr);
-  return self->description;
-}
-
-FlValue* quantum_message_data_get_data(QuantumMessageData* self) {
-  g_return_val_if_fail(QUANTUM_IS_MESSAGE_DATA(self), nullptr);
-  return self->data;
-}
-
-static FlValue* quantum_message_data_to_list(QuantumMessageData* self) {
-  FlValue* values = fl_value_new_list();
-  fl_value_append_take(values, self->name != nullptr ? fl_value_new_string(self->name) : fl_value_new_null());
-  fl_value_append_take(values, self->description != nullptr ? fl_value_new_string(self->description) : fl_value_new_null());
-  fl_value_append_take(values, fl_value_ref(self->data));
-  return values;
-}
-
-static QuantumMessageData* quantum_message_data_new_from_list(FlValue* values) {
-  FlValue* value0 = fl_value_get_list_value(values, 0);
-  const gchar* name = nullptr;
-  if (fl_value_get_type(value0) != FL_VALUE_TYPE_NULL) {
-    name = fl_value_get_string(value0);
-  }
-  FlValue* value1 = fl_value_get_list_value(values, 1);
-  const gchar* description = nullptr;
-  if (fl_value_get_type(value1) != FL_VALUE_TYPE_NULL) {
-    description = fl_value_get_string(value1);
-  }
-  FlValue* value2 = fl_value_get_list_value(values, 2);
-  FlValue* data = value2;
-  return quantum_message_data_new(name, description, data);
-}
-
 struct _QuantumDirectoryResponse {
   GObject parent_instance;
 
@@ -163,15 +81,8 @@ struct _QuantumMessageCodec {
 
 G_DEFINE_TYPE(QuantumMessageCodec, quantum_message_codec, fl_standard_message_codec_get_type())
 
-static gboolean quantum_message_codec_write_quantum_message_data(FlStandardMessageCodec* codec, GByteArray* buffer, QuantumMessageData* value, GError** error) {
-  uint8_t type = 129;
-  g_byte_array_append(buffer, &type, sizeof(uint8_t));
-  g_autoptr(FlValue) values = quantum_message_data_to_list(value);
-  return fl_standard_message_codec_write_value(codec, buffer, values, error);
-}
-
 static gboolean quantum_message_codec_write_quantum_directory_response(FlStandardMessageCodec* codec, GByteArray* buffer, QuantumDirectoryResponse* value, GError** error) {
-  uint8_t type = 130;
+  uint8_t type = 129;
   g_byte_array_append(buffer, &type, sizeof(uint8_t));
   g_autoptr(FlValue) values = quantum_directory_response_to_list(value);
   return fl_standard_message_codec_write_value(codec, buffer, values, error);
@@ -181,28 +92,11 @@ static gboolean quantum_message_codec_write_value(FlStandardMessageCodec* codec,
   if (fl_value_get_type(value) == FL_VALUE_TYPE_CUSTOM) {
     switch (fl_value_get_custom_type(value)) {
       case 129:
-        return quantum_message_codec_write_quantum_message_data(codec, buffer, QUANTUM_MESSAGE_DATA(fl_value_get_custom_value_object(value)), error);
-      case 130:
         return quantum_message_codec_write_quantum_directory_response(codec, buffer, QUANTUM_DIRECTORY_RESPONSE(fl_value_get_custom_value_object(value)), error);
     }
   }
 
   return FL_STANDARD_MESSAGE_CODEC_CLASS(quantum_message_codec_parent_class)->write_value(codec, buffer, value, error);
-}
-
-static FlValue* quantum_message_codec_read_quantum_message_data(FlStandardMessageCodec* codec, GBytes* buffer, size_t* offset, GError** error) {
-  g_autoptr(FlValue) values = fl_standard_message_codec_read_value(codec, buffer, offset, error);
-  if (values == nullptr) {
-    return nullptr;
-  }
-
-  g_autoptr(QuantumMessageData) value = quantum_message_data_new_from_list(values);
-  if (value == nullptr) {
-    g_set_error(error, FL_MESSAGE_CODEC_ERROR, FL_MESSAGE_CODEC_ERROR_FAILED, "Invalid data received for MessageData");
-    return nullptr;
-  }
-
-  return fl_value_new_custom_object(129, G_OBJECT(value));
 }
 
 static FlValue* quantum_message_codec_read_quantum_directory_response(FlStandardMessageCodec* codec, GBytes* buffer, size_t* offset, GError** error) {
@@ -217,14 +111,12 @@ static FlValue* quantum_message_codec_read_quantum_directory_response(FlStandard
     return nullptr;
   }
 
-  return fl_value_new_custom_object(130, G_OBJECT(value));
+  return fl_value_new_custom_object(129, G_OBJECT(value));
 }
 
 static FlValue* quantum_message_codec_read_value_of_type(FlStandardMessageCodec* codec, GBytes* buffer, size_t* offset, int type, GError** error) {
   switch (type) {
     case 129:
-      return quantum_message_codec_read_quantum_message_data(codec, buffer, offset, error);
-    case 130:
       return quantum_message_codec_read_quantum_directory_response(codec, buffer, offset, error);
     default:
       return FL_STANDARD_MESSAGE_CODEC_CLASS(quantum_message_codec_parent_class)->read_value_of_type(codec, buffer, offset, type, error);
@@ -335,7 +227,7 @@ static void quantum_quantum_host_api_choose_directory_response_class_init(Quantu
 QuantumQuantumHostApiChooseDirectoryResponse* quantum_quantum_host_api_choose_directory_response_new(QuantumDirectoryResponse* return_value) {
   QuantumQuantumHostApiChooseDirectoryResponse* self = QUANTUM_QUANTUM_HOST_API_CHOOSE_DIRECTORY_RESPONSE(g_object_new(quantum_quantum_host_api_choose_directory_response_get_type(), nullptr));
   self->value = fl_value_new_list();
-  fl_value_append_take(self->value, return_value != nullptr ? fl_value_new_custom_object(130, G_OBJECT(return_value)) : fl_value_new_null());
+  fl_value_append_take(self->value, return_value != nullptr ? fl_value_new_custom_object(129, G_OBJECT(return_value)) : fl_value_new_null());
   return self;
 }
 
@@ -585,7 +477,7 @@ static void quantum_quantum_host_api_send_message_cb(FlBasicMessageChannel* chan
   }
 
   FlValue* value0 = fl_value_get_list_value(message_, 0);
-  QuantumMessageData* message = QUANTUM_MESSAGE_DATA(fl_value_get_custom_value_object(value0));
+  const gchar* message = fl_value_get_string(value0);
   g_autoptr(QuantumQuantumHostApiResponseHandle) handle = quantum_quantum_host_api_response_handle_new(channel, response_handle);
   self->vtable->send_message(message, handle, self->user_data);
 }

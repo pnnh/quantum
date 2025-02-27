@@ -58,42 +58,6 @@ template<class T> class ErrorOr {
 
 
 // Generated class from Pigeon that represents data sent in messages.
-class MessageData {
- public:
-  // Constructs an object setting all non-nullable fields.
-  explicit MessageData(const flutter::EncodableMap& data);
-
-  // Constructs an object setting all fields.
-  explicit MessageData(
-    const std::string* name,
-    const std::string* description,
-    const flutter::EncodableMap& data);
-
-  const std::string* name() const;
-  void set_name(const std::string_view* value_arg);
-  void set_name(std::string_view value_arg);
-
-  const std::string* description() const;
-  void set_description(const std::string_view* value_arg);
-  void set_description(std::string_view value_arg);
-
-  const flutter::EncodableMap& data() const;
-  void set_data(const flutter::EncodableMap& value_arg);
-
-
- private:
-  static MessageData FromEncodableList(const flutter::EncodableList& list);
-  flutter::EncodableList ToEncodableList() const;
-  friend class QuantumHostApi;
-  friend class PigeonInternalCodecSerializer;
-  std::optional<std::string> name_;
-  std::optional<std::string> description_;
-  flutter::EncodableMap data_;
-
-};
-
-
-// Generated class from Pigeon that represents data sent in messages.
 class DirectoryResponse {
  public:
   // Constructs an object setting all non-nullable fields.
@@ -156,7 +120,7 @@ class QuantumHostApi {
     int64_t a,
     int64_t b) = 0;
   virtual void SendMessage(
-    const MessageData& message,
+    const std::string& message,
     std::function<void(ErrorOr<bool> reply)> result) = 0;
 
   // The codec used by QuantumHostApi.
