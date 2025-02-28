@@ -13,18 +13,14 @@ let package = Package(
     targets: [
         .target(
             name: "quantum",
-            dependencies: ["native"],
+            dependencies: ["MTQuantum"],
             resources: [
                 .process("PrivacyInfo.xcprivacy"),
             ]
         ),
-//        .binaryTarget(
-//            name: "MTQuantum",
-//            path: "Frameworks/MTQuantum.xcframework"
-//        )
-        .target(
-            name: "native",
-            dependencies: []
-        ),
+        .binaryTarget(
+            name: "MTQuantum",
+            path: "Frameworks/MTQuantum.xcframework"
+        )
     ]
 )

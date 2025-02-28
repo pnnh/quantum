@@ -25,8 +25,4 @@ class Quantum {
     final String language = await hostApi.getHostLanguage();
     return language;
   }
-
-  static String? resolvePath(String relativePath) {
-    return PathHelper().resolvePath(relativePath);
-  }
 }

@@ -1,6 +1,7 @@
 import 'package:pigeon/pigeon.dart';
 
 @ConfigurePigeon(PigeonOptions(
+  dartPackageName: 'quantum',
   dartOut: 'lib/messages.g.dart',
   dartOptions: DartOptions(),
   cppOptions: CppOptions(namespace: 'quantum'),
@@ -13,7 +14,6 @@ import 'package:pigeon/pigeon.dart';
   kotlinOptions: KotlinOptions(),
   swiftOut: 'macos/quantum/Sources/quantum/Messages.g.swift',
   swiftOptions: SwiftOptions(),
-  dartPackageName: 'quantum',
 ))
 class DirectoryResponse {
   String? absoluteUrl;

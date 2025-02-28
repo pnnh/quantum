@@ -6,17 +6,18 @@ import 'dart:io';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:quantum/platform/macos/generated_bindings.dart';
+
+import 'generated_bindings.dart';
 
 typedef HelloWorldFunc = ffi.Void Function();
 typedef HelloWorld = void Function();
 
 class FFIBindings {
-  late final QuantumMacOS _quantumNative = loadNativeLibrary();
+  late final QuantumNative _quantumNative = loadNativeLibrary();
 
-  QuantumMacOS loadNativeLibrary() {
+  QuantumNative loadNativeLibrary() {
     var dylib = _openNativeLibrary('MTQuantum');
-    return QuantumMacOS(dylib);
+    return QuantumNative(dylib);
   }
 
   DynamicLibrary _openNativeLibrary(String libName) {
@@ -34,7 +35,7 @@ class FFIBindings {
   }
 
   int nativeAdd(int a, int b) {
-    _quantumNative.CLogInfo(
+    _quantumNative.QMLogInfo(
         "Hello, world!".toNativeUtf8() as ffi.Pointer<ffi.Char>);
     return _quantumNative.add(a, b);
   }

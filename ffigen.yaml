@@ -1,0 +1,9 @@
+name: QuantumNative
+description: macOS ffi bindings for quantum plugin.
+output: 'lib/generated_bindings.dart'
+headers:
+  entry-points:
+    - 'src/quantum/quantum.h'
+    - 'src/quantum/logger/logger.h'
+compiler-opts:
+  - '-Isrc'

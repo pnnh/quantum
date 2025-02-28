@@ -5,10 +5,11 @@ import 'package:quantum/filesystem/storage.dart';
 import 'package:quantum/messages.g.dart';
 import 'package:quantum/quantum.dart';
 import 'package:quantum/utils/md5.dart';
-
+import 'package:quantum/utils/string.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mime/mime.dart';
 import 'package:uuid/uuid.dart';
+import 'path.dart';
 
 part 'file.g.dart';
 
@@ -84,7 +85,7 @@ class QMFileModel {
       {bool justFolder = false, bool skipHidden = true}) async {
     var list = <QMFileModel>[];
 
-    var realPath = Quantum.resolvePath(filePath);
+    var realPath = await resolvePath(filePath);
     if (realPath == null) {
       return list;
     }
@@ -110,17 +111,24 @@ class QMFileModel {
     return list;
   }
 
+  static final _accessingSecurityScopedResourceMap = <String, String>{};
+
   static Future _startAccessingSecurityScopedResource(String fullPath) async {
     var model = await _findFilesystemItemRecursive(fullPath);
     if (model == null) {
+      return Future.value();
+    }
+    if (_accessingSecurityScopedResourceMap.containsKey(model.uid)) {
       return Future.value();
     }
     var hostApi = QuantumHostApi();
     var newBookmarkData =
         await hostApi.startAccessingSecurityScopedResource(model.bookmarkData);
     if (newBookmarkData != null) {
-      _updateFilesystemItemBookmark(model.uid, newBookmarkData);
+      model.bookmarkData = newBookmarkData;
+      _insertFilesystemItem(model);
     }
+    _accessingSecurityScopedResourceMap[model.uid] = fullPath;
 
     return Future.value();
   }
@@ -155,21 +163,19 @@ real_path = excluded.real_path, bookmark_data = excluded.bookmark_data;
     var uuid = const Uuid();
     var uid = uuid.v4();
     var fsDb = await connectFilesystemDatabase();
+
     await fsDb.executeAsync(sqlTextInsertFolder, [
       model.uid,
-      model.showPath,
-      model.showPath,
-      model.realPath,
+      stringTrimRight(model.name, "/"),
+      stringTrimRight(model.showPath, "/"),
+      stringTrimRight(model.realPath, "/"),
       model.bookmarkData
     ]);
   }
 
   static Future<QMFilesystemItem?> _findFilesystemItemRecursive(
       String fullUrl) async {
-    String resolvedPath = fullUrl.trim();
-    if (resolvedPath.endsWith("/")) {
-      resolvedPath = resolvedPath.substring(0, resolvedPath.length - 1);
-    }
+    String resolvedPath = stringTrimRight(fullUrl, "/");
     var sqlText = "select * from filesystem_items where real_path = ?";
 
     var fsDb = await connectFilesystemDatabase();
@@ -187,9 +193,5 @@ real_path = excluded.real_path, bookmark_data = excluded.bookmark_data;
       }
     }
     return null;
-  }
-
-  static void _updateFilesystemItemBookmark(String uid, String bookmarkData) {
-    // todo待实现
   }
 }

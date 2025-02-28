@@ -1,5 +1,8 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 class QMSqliteClient {
   late Database _database;
@@ -9,7 +12,9 @@ class QMSqliteClient {
     String dbName, {
     String initSql = '',
   }) async {
-    var databasesPath = await getDatabasesPath();
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    var databasesPath = appDocDir.path;
+    debugPrint("databasesPath: $databasesPath");
     String fullDbPath = join(databasesPath, dbName);
 
     Database database = await openDatabase(fullDbPath, version: 1,
