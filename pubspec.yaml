@@ -56,10 +56,3 @@ dev_dependencies:
     sdk: flutter
   msix: ^3.16.8
 
-ffigen:
-  output: 'lib/generated_bindings.dart'
-  headers:
-    entry-points:
-      - 'src/quantum/quantum.h'
-  compiler-opts:
-    - '-Isrc'

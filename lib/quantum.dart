@@ -1,16 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'dart:ffi' as ffi;
-import 'dart:ffi';
-import 'dart:io' show Platform, Directory;
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:quantum/generated_bindings.dart';
-
-import 'bindings.dart';
 import 'filesystem/path.dart';
 import 'messages.g.dart';
 

@@ -4,34 +4,21 @@
 // ignore_for_file: type=lint
 import 'dart:ffi' as ffi;
 
-class NativeLibrary {
+/// macOS ffi bindings for quantum plugin.
+class QuantumMacOS {
   /// Holds the symbol lookup function.
   final ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
       _lookup;
 
   /// The symbols are looked up in [dynamicLibrary].
-  NativeLibrary(ffi.DynamicLibrary dynamicLibrary)
+  QuantumMacOS(ffi.DynamicLibrary dynamicLibrary)
       : _lookup = dynamicLibrary.lookup;
 
   /// The symbols are looked up with [lookup].
-  NativeLibrary.fromLookup(
+  QuantumMacOS.fromLookup(
       ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
           lookup)
       : _lookup = lookup;
-
-  void QMLogInfo(
-    ffi.Pointer<ffi.Char> message,
-  ) {
-    return _QMLogInfo(
-      message,
-    );
-  }
-
-  late final _QMLogInfoPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Char>)>>(
-          'QMLogInfo');
-  late final _QMLogInfo =
-      _QMLogInfoPtr.asFunction<void Function(ffi.Pointer<ffi.Char>)>();
 
   int add(
     int a,
@@ -46,4 +33,18 @@ class NativeLibrary {
   late final _addPtr =
       _lookup<ffi.NativeFunction<ffi.Int Function(ffi.Int, ffi.Int)>>('add');
   late final _add = _addPtr.asFunction<int Function(int, int)>();
+
+  void CLogInfo(
+    ffi.Pointer<ffi.Char> message,
+  ) {
+    return _CLogInfo(
+      message,
+    );
+  }
+
+  late final _CLogInfoPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Char>)>>(
+          'CLogInfo');
+  late final _CLogInfo =
+      _CLogInfoPtr.asFunction<void Function(ffi.Pointer<ffi.Char>)>();
 }
