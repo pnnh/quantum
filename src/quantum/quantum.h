@@ -1,15 +1,12 @@
 #pragma once
-
-#ifdef _MSC_VER
-#define QMAPI __declspec (dllexport)
-#endif
-
+#include <quark/build.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    QMAPI int  add(int a, int b);
-    QMAPI void QMLogInfo(const char *message);
+CXAPI int add(int a, int b);
+
+CXAPI void QMLogInfo(const char *message);
 #ifdef __cplusplus
 }
 #endif
