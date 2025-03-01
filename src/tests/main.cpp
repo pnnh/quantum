@@ -1,5 +1,5 @@
 #include <iostream>
-#include "version.h"
+#include "quark/tests/version.h"
 
 #include "quark/services/database/SqliteService.h"
 
@@ -14,5 +14,6 @@ void cxxSqliteVersion() {
 
 int main() {
     cSqliteVersion();
+    cSqliteSelectNames();
     return 0;
 }

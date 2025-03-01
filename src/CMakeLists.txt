@@ -4,7 +4,7 @@ project(Quantum VERSION 0.1.0 LANGUAGES C CXX)
 
 if (APPLE)
     enable_language(OBJCXX Swift)
-endif()
+endif ()
 
 # 设置语言标准
 set(CMAKE_C_STANDARD 17)
@@ -31,7 +31,11 @@ set(Boost_USE_MULTITHREADED ON)
 
 set(LIB_NAME "MTQuantum")
 
-file(GLOB_RECURSE QUANTUM_SOURCES quantum/*.cpp quark/*.cpp)
+file(GLOB_RECURSE QUANTUM_SOURCES
+        quantum/*.c
+        quantum/*.cpp
+        quark/*.c
+        quark/*.cpp)
 
 if (APPLE)
     list(APPEND QUANTUM_SOURCES module.modulemap)
@@ -70,7 +74,7 @@ if (APPLE)
             PUBLIC_HEADER "src/quantum/quantum.h"
             MACOSX_BUNDLE TRUE
     )
-endif()
+endif ()
 
 # 添加测试代码
 add_subdirectory(tests)
