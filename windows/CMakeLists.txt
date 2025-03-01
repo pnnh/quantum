@@ -102,3 +102,14 @@ add_custom_command(TARGET ${TEST_RUNNER} POST_BUILD
 include(GoogleTest)
 gtest_discover_tests(${TEST_RUNNER})
 endif()
+
+
+# 查找并绑定dll文件
+file(GLOB_RECURSE DLLPATHS "${CMAKE_CURRENT_SOURCE_DIR}/../src/build/windows/Debug/*.dll")
+#message(SEND_ERROR "DLL files: ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_SOURCE_DIR} ")
+
+# 配置绑定的dll信息，flutter将会拷贝到.exe所在的目录
+set(${PROJECT_NAME}_bundled_libraries
+        ${DLLPATHS}
+        PARENT_SCOPE
+)

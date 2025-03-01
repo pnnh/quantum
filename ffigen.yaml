@@ -7,3 +7,6 @@ headers:
     - 'src/quantum/logger/logger.h'
 compiler-opts:
   - '-Isrc'
+llvm-path:
+  - '/usr/local/opt/llvm'
+  - 'C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\Llvm\x64'

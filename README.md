@@ -17,7 +17,7 @@ cmake --install build/macOS --config Release
 
 ```bash
 dart run ffigen
-dart run ffigen --config macos/ffigen.yaml
+dart run ffigen --config ffigen.yaml
 ```
 
 ## 生成模型

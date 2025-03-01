@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:path/path.dart';
 import 'package:quantum/database/database.dart';
 
 part 'storage.g.dart';
@@ -58,5 +59,10 @@ create table if not exists main.filesystem_items
     bookmark_data text
 );
 ''';
-  return QMSqliteClient.connect("filesystem.db", initSql: initSql);
+  var fsDb = await QMSqliteClient.connect(join("quantum", "filesystem.db"),
+      initSql: initSql);
+  if (fsDb == null) {
+    throw Exception("数据库连接失败");
+  }
+  return fsDb;
 }

@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.28...3.31)
 
 project(Quantum VERSION 0.1.0 LANGUAGES C CXX)
 
-enable_language(OBJCXX Swift)
+if (APPLE)
+    enable_language(OBJCXX Swift)
+endif()
 
 # 设置语言标准
 set(CMAKE_C_STANDARD 17)
@@ -30,7 +32,11 @@ set(Boost_USE_MULTITHREADED ON)
 set(LIB_NAME "MTQuantum")
 
 file(GLOB_RECURSE QUANTUM_SOURCES quantum/*.cpp quark/*.cpp)
-add_library(${LIB_NAME} SHARED ${QUANTUM_SOURCES} module.modulemap)
+
+if (APPLE)
+    list(APPEND QUANTUM_SOURCES module.modulemap)
+endif ()
+add_library(${LIB_NAME} SHARED ${QUANTUM_SOURCES})
 
 # 查找并引用日志库
 find_package(spdlog CONFIG REQUIRED)

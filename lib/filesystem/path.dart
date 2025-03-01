@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
+
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -24,20 +24,25 @@ Future<String?> resolvePath(String path) async {
   return realPath;
 }
 
-// 获取App的工作目录，一般是各个平台下的App沙盒目录
-String? getAppWorkDir() {
-  String os = Platform.operatingSystem;
-  String? home = "";
-  Map<String, String> envVars = Platform.environment;
-  if (Platform.isMacOS) {
-    home = join(envVars['HOME'] as String, "Documents");
-  } else if (Platform.isLinux) {
-    home = envVars['HOME'];
-  } else if (Platform.isWindows) {
-    home = envVars['UserProfile'];
+// 递归检测目录是否存在，不存在时创建
+Future<void> createDirectoryRecursively(String path) async {
+  final directory = Directory(path);
+  if (await directory.exists()) {
+    print("Directory already exists: $path");
+  } else {
+    await directory.create(recursive: true);
+    print("Directory created: $path");
   }
-  print("getAppWorkDir: $home");
-  return home;
+}
+
+// 获取App的工作目录，一般是各个平台下的App沙盒目录
+Future<String?> prepareAppWorkDir(String relativePath) async {
+  Directory appDocDir = await getApplicationDocumentsDirectory();
+
+  var fullPath = join(appDocDir.path, relativePath);
+  print("getAppWorkDir: $fullPath");
+  await createDirectoryRecursively(fullPath);
+  return fullPath;
 }
 
 String getBlogDir() {
