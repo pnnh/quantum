@@ -5,6 +5,8 @@ headers:
   entry-points:
     - 'src/quantum/quantum.h'
     - 'src/quantum/logger/logger.h'
+    - 'src/quark/services/database/SqliteService.h'
+    - 'src/quark/types/string.h'
 compiler-opts:
   - '-Isrc'
 llvm-path:

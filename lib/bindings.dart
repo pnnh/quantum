@@ -13,7 +13,7 @@ typedef HelloWorldFunc = ffi.Void Function();
 typedef HelloWorld = void Function();
 
 class FFIBindings {
-  late final QuantumNative _quantumNative = loadNativeLibrary();
+  late final QuantumNative quantumNative = loadNativeLibrary();
 
   QuantumNative loadNativeLibrary() {
     var dylib = _openNativeLibrary('MTQuantum');
@@ -35,27 +35,8 @@ class FFIBindings {
   }
 
   int nativeAdd(int a, int b) {
-    _quantumNative.QMLogInfo(
+    quantumNative.QMLogInfo(
         "Hello, world!".toNativeUtf8() as ffi.Pointer<ffi.Char>);
-    return _quantumNative.add(a, b);
-  }
-
-  void pluginSayHello() {
-    // _helloWorld();
-    //
-    // // 尝试调用sum，传递和返回int参数
-    // print('3 + 5 = ${_quantumNative.sum(3, 5)}');
-    //
-    // // 尝试调用subtract，传递指针
-    // final p = calloc<Int>();
-    // p.value = 3;
-    // print('3 - 5 = ${_quantumNative.subtract(p, 5)}');
-    // calloc.free(p); // 释放dart端分配的内存
-    //
-    // // 尝试调用multiply，返回指针
-    // final resultPointer = _quantumNative.multiply(3, 5);
-    // final int result = resultPointer.value;
-    // print('3 * 5 = $result');
-    // _quantumNative.free_pointer(resultPointer); // 释放native端分配的内存
+    return quantumNative.add(a, b);
   }
 }

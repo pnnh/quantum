@@ -1,7 +1,7 @@
 #include <iostream>
 #include "version.h"
 
-#include "quark/services/database/SqliteService.hpp"
+#include "quark/services/database/SqliteService.h"
 
 void cxxSqliteVersion() {
     auto database_path = "polaris.sqlite";

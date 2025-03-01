@@ -47,4 +47,76 @@ class QuantumNative {
           'QMLogInfo');
   late final _QMLogInfo =
       _QMLogInfoPtr.asFunction<void Function(ffi.Pointer<ffi.Char>)>();
+
+  ffi.Pointer<QKString> QKStringCreate(
+    ffi.Pointer<ffi.Char> data,
+    int length,
+  ) {
+    return _QKStringCreate(
+      data,
+      length,
+    );
+  }
+
+  late final _QKStringCreatePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<QKString> Function(
+              ffi.Pointer<ffi.Char>, ffi.Size)>>('QKStringCreate');
+  late final _QKStringCreate = _QKStringCreatePtr.asFunction<
+      ffi.Pointer<QKString> Function(ffi.Pointer<ffi.Char>, int)>();
+
+  ffi.Pointer<QKSqliteService> QKSqliteServiceCreate(
+    ffi.Pointer<QKString> message,
+  ) {
+    return _QKSqliteServiceCreate(
+      message,
+    );
+  }
+
+  late final _QKSqliteServiceCreatePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<QKSqliteService> Function(
+              ffi.Pointer<QKString>)>>('QKSqliteServiceCreate');
+  late final _QKSqliteServiceCreate = _QKSqliteServiceCreatePtr.asFunction<
+      ffi.Pointer<QKSqliteService> Function(ffi.Pointer<QKString>)>();
+
+  void QKSqliteServiceDelete(
+    ffi.Pointer<QKSqliteService> instance,
+  ) {
+    return _QKSqliteServiceDelete(
+      instance,
+    );
+  }
+
+  late final _QKSqliteServiceDeletePtr = _lookup<
+          ffi.NativeFunction<ffi.Void Function(ffi.Pointer<QKSqliteService>)>>(
+      'QKSqliteServiceDelete');
+  late final _QKSqliteServiceDelete = _QKSqliteServiceDeletePtr.asFunction<
+      void Function(ffi.Pointer<QKSqliteService>)>();
+
+  ffi.Pointer<QKString> QKSqliteVersion(
+    ffi.Pointer<QKSqliteService> instance,
+  ) {
+    return _QKSqliteVersion(
+      instance,
+    );
+  }
+
+  late final _QKSqliteVersionPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<QKString> Function(
+              ffi.Pointer<QKSqliteService>)>>('QKSqliteVersion');
+  late final _QKSqliteVersion = _QKSqliteVersionPtr.asFunction<
+      ffi.Pointer<QKString> Function(ffi.Pointer<QKSqliteService>)>();
+}
+
+final class QKString extends ffi.Struct {
+  external ffi.Pointer<ffi.Char> data;
+
+  @ffi.Size()
+  external int length;
+}
+
+final class QKSqliteService extends ffi.Struct {
+  external ffi.Pointer<ffi.Void> mtSqlSvc;
 }

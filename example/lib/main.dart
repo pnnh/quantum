@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quantum/bindings.dart';
+import 'package:quantum/database/database.dart';
 import 'package:quantum/filesystem/file.dart';
 import 'package:quantum/quantum.dart' as quantum;
 
@@ -80,6 +81,13 @@ class _MyAppState extends State<MyApp> {
                     onPressed: () async {
                       var files = await quantum.Quantum.getHostLanguage();
                       debugPrint("getHostLanguage $files");
+                    })),
+            SizedBox(
+                child: TextButton(
+                    child: const Text('sqliteVersion'),
+                    onPressed: () async {
+                      var files = await QMSqliteClient.sqliteVersion();
+                      debugPrint("sqliteVersion $files");
                     }))
           ])),
     );

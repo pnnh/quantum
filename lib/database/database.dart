@@ -1,8 +1,25 @@
+import 'dart:ffi' as ffi;
+
+import 'package:ffi/ffi.dart';
 import 'package:path/path.dart';
+import 'package:quantum/bindings.dart';
 import 'package:quantum/filesystem/path.dart';
 
 class QMSqliteClient {
   // late Database _database;
+
+  static Future<String?> sqliteVersion() async {
+    var quantumFFI = FFIBindings();
+    var dbPath = "quantum.sqlite";
+    var qkStr = quantumFFI.quantumNative.QKStringCreate(
+        dbPath.toNativeUtf8() as ffi.Pointer<ffi.Char>, dbPath.length);
+
+    var sqlSvc = quantumFFI.quantumNative.QKSqliteServiceCreate(qkStr);
+    var version = quantumFFI.quantumNative.QKSqliteVersion(sqlSvc);
+    var versionStr = version.ref.data.cast<Utf8>().toDartString();
+    quantumFFI.quantumNative.QKSqliteServiceDelete(sqlSvc);
+    return versionStr;
+  }
 
   // 连接到指定数据库，仅支持指定数据库名称
   static Future<QMSqliteClient?> connect(

@@ -37,3 +37,7 @@ cmake-build-*
 
 # Visual Studio
 .vs/
+
+# Other
+*.sqlite
+*.db
