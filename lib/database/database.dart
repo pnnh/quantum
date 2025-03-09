@@ -20,18 +20,20 @@ Future sqliteSelectNames() async {
   var sqlRow = quantumFFI.quantumNative.QKSqliteResultGetRow(sqlResult, 0);
   var strColName = quantumFFI.quantumNative
       .QKStringCreate("strVal".toNativeUtf8() as ffi.Pointer<ffi.Char>);
-  var strVal =
+  var strCol =
       quantumFFI.quantumNative.QKSqliteRowGetColumnByName(sqlRow, strColName);
-  var strValStr = quantumFFI.quantumNative
-      .QKSQliteColumnGetStringValue(strVal)
+  var qkStrValStr =
+      quantumFFI.quantumNative.QKSQliteColumnGetStringValue(strCol);
+  var dartStr = quantumFFI.quantumNative
+      .QKStringGetData(qkStrValStr)
       .cast<Utf8>()
       .toDartString();
-  print("strVal: $strValStr");
+  print("strVal: $dartStr");
   var intColName = quantumFFI.quantumNative
       .QKStringCreate("intVal".toNativeUtf8() as ffi.Pointer<ffi.Char>);
-  var intVal =
+  var intCol =
       quantumFFI.quantumNative.QKSqliteRowGetColumnByName(sqlRow, intColName);
-  var intValInt = quantumFFI.quantumNative.QKSQliteColumnGetIntValue(intVal);
+  var intValInt = quantumFFI.quantumNative.QKSQliteColumnGetIntValue(intCol);
   print("intVal: $intValInt");
 }
 
