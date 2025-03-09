@@ -1,4 +1,4 @@
-add_executable(QMTests main.cpp)
+add_executable(QMTests main.c)
 add_dependencies(QMTests MTQuantum)
 target_link_libraries(QMTests PUBLIC MTQuantum)
 

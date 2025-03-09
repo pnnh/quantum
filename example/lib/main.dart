@@ -88,6 +88,12 @@ class _MyAppState extends State<MyApp> {
                     onPressed: () async {
                       var files = await QMSqliteClient.sqliteVersion();
                       debugPrint("sqliteVersion $files");
+                    })),
+            SizedBox(
+                child: TextButton(
+                    child: const Text('sqliteSelectNames'),
+                    onPressed: () async {
+                      await sqliteSelectNames();
                     }))
           ])),
     );
