@@ -7,3 +7,7 @@ add_custom_command(TARGET QMTests
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:MTQuantum> "${CMAKE_CURRENT_BINARY_DIR}/Debug"
         COMMENT "Copy dll file to ${CMAKE_CURRENT_BINARY_DIR} directory" VERBATIM
 )
+
+add_executable(QMXXTests main.cpp)
+add_dependencies(QMXXTests MTQuantum)
+target_link_libraries(QMXXTests PUBLIC MTQuantum)

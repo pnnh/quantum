@@ -4,5 +4,6 @@
 int main() {
     cSqliteVersion();
     cSqliteSelectNames();
+    cSqliteStatParams();
     return 0;
 }
