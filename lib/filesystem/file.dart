@@ -1,15 +1,14 @@
 import 'dart:io';
 
-import 'package:path/path.dart';
-import 'package:quantum/filesystem/storage.dart';
-import 'package:quantum/messages.g.dart';
-import 'package:quantum/quantum.dart';
-import 'package:quantum/utils/md5.dart';
-import 'package:quantum/utils/string.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mime/mime.dart';
+import 'package:path/path.dart';
+import 'package:quantum/filesystem/path.dart';
+import 'package:quantum/filesystem/storage.dart';
+import 'package:quantum/messages.g.dart';
+import 'package:quantum/utils/md5.dart';
+import 'package:quantum/utils/string.dart';
 import 'package:uuid/uuid.dart';
-import 'path.dart';
 
 part 'file.g.dart';
 
@@ -180,7 +179,7 @@ real_path = excluded.real_path, bookmark_data = excluded.bookmark_data;
 
     var fsDb = await connectFilesystemDatabase();
     while (true) {
-      var list = await fsDb.selectAsync(sqlText, [resolvedPath]);
+      var list = await fsDb.executeAsync(sqlText, [resolvedPath]);
       if (list.isNotEmpty) {
         var item = list[0];
         return QMFilesystemItem.fromJson(item);

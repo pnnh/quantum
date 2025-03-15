@@ -1,11 +1,15 @@
 name: QuantumNative
-description: macOS ffi bindings for quantum plugin.
+description: ffi bindings for quantum plugin.
 output: 'lib/generated_bindings.dart'
 headers:
   entry-points:
     - 'src/quantum/quantum.h'
     - 'src/quantum/logger/logger.h'
     - 'src/quark/services/database/sqlite_service.h'
+    - 'src/quark/services/database/sqlite_command.h'
+    - 'src/quark/services/database/sqlite_result.h'
+    - 'src/quark/services/database/sqlite_row.h'
+    - 'src/quark/services/database/sqlite_column.h'
     - 'src/quark/types/string.h'
 compiler-opts:
   - '-Isrc'

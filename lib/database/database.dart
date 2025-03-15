@@ -4,6 +4,7 @@ import 'package:ffi/ffi.dart';
 import 'package:path/path.dart';
 import 'package:quantum/bindings.dart';
 import 'package:quantum/filesystem/path.dart';
+import 'package:quantum/generated_bindings.dart';
 
 // 测试包装的sqlite3查询语句
 Future sqliteSelectNames() async {
@@ -38,7 +39,8 @@ Future sqliteSelectNames() async {
 }
 
 class QMSqliteClient {
-  // late Database _database;
+  late ffi.Pointer<QKSqliteService> sqlSvc;
+  late FFIBindings quantumFFI;
 
   static Future<String?> sqliteVersion() async {
     var quantumFFI = FFIBindings();
@@ -55,6 +57,16 @@ class QMSqliteClient {
     return versionStr;
   }
 
+  QMSqliteClient(String fullDbPath) {
+    quantumFFI = FFIBindings();
+
+    var qkStr = quantumFFI.quantumNative
+        .QKStringCreate(fullDbPath.toNativeUtf8() as ffi.Pointer<ffi.Char>);
+
+    var sqlSvc = quantumFFI.quantumNative.QKSqliteServiceCreate(qkStr);
+    this.sqlSvc = sqlSvc;
+  }
+
   // 连接到指定数据库，仅支持指定数据库名称
   static Future<QMSqliteClient?> connect(
     String appDbPath, {
@@ -69,39 +81,61 @@ class QMSqliteClient {
     fullDbPath = join(fullDbPath, basename(appDbPath));
     print("databasesPath2: $fullDbPath");
 
-    // var database = sqlite3.open(fullDbPath, mode: OpenMode.readWrite);
-    // if (initSql.isNotEmpty) {
-    //   database.execute(initSql, []);
-    // }
+    var client = QMSqliteClient(fullDbPath);
 
-    var helper = QMSqliteClient();
-    // helper._database = database;
-
-    return helper;
+    return client;
   }
 
   void close() {
-    // _database.dispose();
+    quantumFFI.quantumNative.QKSqliteServiceDelete(sqlSvc);
   }
 
-  static Future<QMSqliteClient> connectInMemory() async {
-    // Database database = sqlite3.openInMemory();
-
-    var helper = QMSqliteClient();
-    // helper._database = database;
-
-    return helper;
-  }
-
-  Future<void> executeAsync(String sql,
+  Future<List<Map<String, Object?>>> executeAsync(String sqlText,
       [List<Object?> parameters = const []]) async {
-    // _database.execute(sql, parameters);
-  }
+    var result = <Map<String, Object?>>[];
 
-  Future<List<Map<String, Object?>>> selectAsync(String sql,
-      [List<Object?> parameters = const []]) async {
-    // var resultSet = _database.select(sql, parameters);
-    // return resultSet.map((row) => row).toList();
-    return [];
+    var qkSqlText = quantumFFI.quantumNative
+        .QKStringCreate(sqlText.toNativeUtf8() as ffi.Pointer<ffi.Char>);
+    var sqlResult = quantumFFI.quantumNative.QKSqliteRunSql(sqlSvc, qkSqlText);
+    var rowCount =
+        quantumFFI.quantumNative.QKSqliteResultGetRowCount(sqlResult);
+    if (rowCount == 0) {
+      return [];
+    }
+
+    for (var rowIndex = 0; rowIndex < rowCount; rowIndex++) {
+      var sqlRow =
+          quantumFFI.quantumNative.QKSqliteResultGetRow(sqlResult, rowIndex);
+      var colCount = quantumFFI.quantumNative.QKSqliteRowGetColumnCount(sqlRow);
+      var colObj = <String, Object?>{};
+      for (var colIndex = 0; colIndex < colCount; colIndex++) {
+        var qkCol = quantumFFI.quantumNative
+            .QKSqliteRowGetColumnByIndex(sqlRow, colIndex);
+        var colName = quantumFFI.quantumNative.QKSQliteColumnGetName(qkCol);
+
+        var qkColType =
+            quantumFFI.quantumNative.QKSQliteColumnGetValueType(qkCol);
+        if (qkColType == quantumFFI.quantumNative.QKSqliteValueString) {
+          var qkStrVal =
+              quantumFFI.quantumNative.QKSQliteColumnGetStringValue(qkCol);
+          var dartStr = quantumFFI.quantumNative
+              .QKStringGetData(qkStrVal)
+              .cast<Utf8>()
+              .toDartString();
+          print("strVal: $dartStr");
+          colObj[colName.cast<Utf8>().toDartString()] = dartStr;
+        } else if (qkColType == quantumFFI.quantumNative.QKSqliteValueInt) {
+          var intValInt =
+              quantumFFI.quantumNative.QKSQliteColumnGetIntValue(qkCol);
+          print("intVal: $intValInt");
+          colObj[colName.cast<Utf8>().toDartString()] = intValInt;
+        } else {
+          print("unknown type");
+        }
+      }
+      result.add(colObj);
+    }
+
+    return result;
   }
 }
