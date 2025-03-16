@@ -59,10 +59,10 @@ create table if not exists main.filesystem_items
     bookmark_data text
 );
 ''';
-  var fsDb = await QMSqliteClient.connect(join("quantum", "filesystem.db"),
-      initSql: initSql);
+  var fsDb = await QMSqliteClient.connect(join("quantum", "filesystem.db"));
   if (fsDb == null) {
     throw Exception("数据库连接失败");
   }
+  await fsDb.executeAsync(initSql);
   return fsDb;
 }

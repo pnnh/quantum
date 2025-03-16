@@ -294,23 +294,20 @@ class QuantumNative {
           int Function(ffi.Pointer<QKSqliteCommand>, ffi.Pointer<QKString>,
               ffi.Pointer<QKString>)>();
 
-  int QKSqliteCommandRun(
+  ffi.Pointer<QKSqliteResult> QKSqliteCommandRun(
     ffi.Pointer<QKSqliteCommand> instance,
-    ffi.Pointer<ffi.Pointer<QKSqliteResult>> sqlResult,
   ) {
     return _QKSqliteCommandRun(
       instance,
-      sqlResult,
     );
   }
 
   late final _QKSqliteCommandRunPtr = _lookup<
       ffi.NativeFunction<
-          ffi.Int Function(ffi.Pointer<QKSqliteCommand>,
-              ffi.Pointer<ffi.Pointer<QKSqliteResult>>)>>('QKSqliteCommandRun');
+          ffi.Pointer<QKSqliteResult> Function(
+              ffi.Pointer<QKSqliteCommand>)>>('QKSqliteCommandRun');
   late final _QKSqliteCommandRun = _QKSqliteCommandRunPtr.asFunction<
-      int Function(ffi.Pointer<QKSqliteCommand>,
-          ffi.Pointer<ffi.Pointer<QKSqliteResult>>)>();
+      ffi.Pointer<QKSqliteResult> Function(ffi.Pointer<QKSqliteCommand>)>();
 
   int QKSqliteCommandClose(
     ffi.Pointer<QKSqliteCommand> instance,

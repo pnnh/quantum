@@ -155,7 +155,7 @@ class QMFileModel {
   static Future<void> _insertFilesystemItem(QMFilesystemItem model) async {
     var sqlTextInsertFolder = '''
 insert into filesystem_items(uid, name, show_path, real_path, bookmark_data)
-values(?, ?, ?, ?, ?)
+values(:uid, :name, :showPath, :realPath, :bookmarkData)
 on conflict(uid) do update set show_path = excluded.show_path, 
 real_path = excluded.real_path, bookmark_data = excluded.bookmark_data;
 ''';
@@ -163,23 +163,25 @@ real_path = excluded.real_path, bookmark_data = excluded.bookmark_data;
     var uid = uuid.v4();
     var fsDb = await connectFilesystemDatabase();
 
-    await fsDb.executeAsync(sqlTextInsertFolder, [
-      model.uid,
-      stringTrimRight(model.name, "/"),
-      stringTrimRight(model.showPath, "/"),
-      stringTrimRight(model.realPath, "/"),
-      model.bookmarkData
-    ]);
+    await fsDb.executeAsync(sqlTextInsertFolder, parameters: {
+      ":uid": model.uid,
+      ":name": stringTrimRight(model.name, "/"),
+      ":showPath": stringTrimRight(model.showPath, "/"),
+      ":realPath": stringTrimRight(model.realPath, "/"),
+      ":bookmarkData": model.bookmarkData
+    });
   }
 
   static Future<QMFilesystemItem?> _findFilesystemItemRecursive(
       String fullUrl) async {
     String resolvedPath = stringTrimRight(fullUrl, "/");
-    var sqlText = "select * from filesystem_items where real_path = ?";
+    var sqlText =
+        "select * from filesystem_items where real_path = :resolvedPath";
 
     var fsDb = await connectFilesystemDatabase();
     while (true) {
-      var list = await fsDb.executeAsync(sqlText, [resolvedPath]);
+      var list = await fsDb
+          .executeAsync(sqlText, parameters: {":resolvedPath": resolvedPath});
       if (list.isNotEmpty) {
         var item = list[0];
         return QMFilesystemItem.fromJson(item);

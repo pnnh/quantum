@@ -68,10 +68,7 @@ class QMSqliteClient {
   }
 
   // 连接到指定数据库，仅支持指定数据库名称
-  static Future<QMSqliteClient?> connect(
-    String appDbPath, {
-    String initSql = '',
-  }) async {
+  static Future<QMSqliteClient?> connect(String appDbPath) async {
     var fullDbPath =
         await prepareAppWorkDir(join("databases", dirname(appDbPath)));
     print("databasesPath: $fullDbPath");
@@ -91,12 +88,42 @@ class QMSqliteClient {
   }
 
   Future<List<Map<String, Object?>>> executeAsync(String sqlText,
-      [List<Object?> parameters = const []]) async {
+      {Map<String, Object?>? parameters}) async {
     var result = <Map<String, Object?>>[];
 
     var qkSqlText = quantumFFI.quantumNative
         .QKStringCreate(sqlText.toNativeUtf8() as ffi.Pointer<ffi.Char>);
-    var sqlResult = quantumFFI.quantumNative.QKSqliteRunSql(sqlSvc, qkSqlText);
+
+    // var sqlResult = quantumFFI.quantumNative.QKSqliteRunSql(sqlSvc, qkSqlText);
+    var sqlCommand = quantumFFI.quantumNative
+        .QKSqliteServiceCreateCommand(sqlSvc, qkSqlText);
+    if (sqlCommand == ffi.nullptr) {
+      return result;
+    }
+
+    if (parameters != null) {
+      for (var entry in parameters.entries) {
+        var paramKey = quantumFFI.quantumNative.QKStringCreate(
+            entry.key.toString().toNativeUtf8() as ffi.Pointer<ffi.Char>);
+        if (entry.value == null) {
+          continue;
+        }
+        if (entry.value is String) {
+          var paramValue = quantumFFI.quantumNative.QKStringCreate(
+              entry.value.toString().toNativeUtf8() as ffi.Pointer<ffi.Char>);
+          quantumFFI.quantumNative
+              .QKSqliteCommandBindString(sqlCommand, paramKey, paramValue);
+        } else if (entry.value is int) {
+          int intValue = entry.value as int;
+          quantumFFI.quantumNative
+              .QKSqliteCommandBindInt(sqlCommand, paramKey, intValue);
+        } else {
+          continue;
+        }
+      }
+    }
+    var sqlResult = quantumFFI.quantumNative.QKSqliteCommandRun(sqlCommand);
+
     var rowCount =
         quantumFFI.quantumNative.QKSqliteResultGetRowCount(sqlResult);
     if (rowCount == 0) {
@@ -111,7 +138,11 @@ class QMSqliteClient {
       for (var colIndex = 0; colIndex < colCount; colIndex++) {
         var qkCol = quantumFFI.quantumNative
             .QKSqliteRowGetColumnByIndex(sqlRow, colIndex);
-        var colName = quantumFFI.quantumNative.QKSQliteColumnGetName(qkCol);
+        var qkColName = quantumFFI.quantumNative.QKSQliteColumnGetName(qkCol);
+        var dartColName = quantumFFI.quantumNative
+            .QKStringGetData(qkColName)
+            .cast<Utf8>()
+            .toDartString();
 
         var qkColType =
             quantumFFI.quantumNative.QKSQliteColumnGetValueType(qkCol);
@@ -122,13 +153,11 @@ class QMSqliteClient {
               .QKStringGetData(qkStrVal)
               .cast<Utf8>()
               .toDartString();
-          print("strVal: $dartStr");
-          colObj[colName.cast<Utf8>().toDartString()] = dartStr;
+          colObj[dartColName] = dartStr;
         } else if (qkColType == quantumFFI.quantumNative.QKSqliteValueInt) {
           var intValInt =
               quantumFFI.quantumNative.QKSQliteColumnGetIntValue(qkCol);
-          print("intVal: $intValInt");
-          colObj[colName.cast<Utf8>().toDartString()] = intValInt;
+          colObj[dartColName] = intValInt;
         } else {
           print("unknown type");
         }
