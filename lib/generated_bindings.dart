@@ -100,309 +100,373 @@ class QuantumNative {
 
   ffi.Pointer<QKString> QKSQliteColumnGetStringValue(
     ffi.Pointer<QKSqliteColumn> instance,
+    ffi.Pointer<ffi.Int> resultCode,
   ) {
     return _QKSQliteColumnGetStringValue(
       instance,
+      resultCode,
     );
   }
 
   late final _QKSQliteColumnGetStringValuePtr = _lookup<
       ffi.NativeFunction<
-          ffi.Pointer<QKString> Function(
-              ffi.Pointer<QKSqliteColumn>)>>('QKSQliteColumnGetStringValue');
+          ffi.Pointer<QKString> Function(ffi.Pointer<QKSqliteColumn>,
+              ffi.Pointer<ffi.Int>)>>('QKSQliteColumnGetStringValue');
   late final _QKSQliteColumnGetStringValue =
       _QKSQliteColumnGetStringValuePtr.asFunction<
-          ffi.Pointer<QKString> Function(ffi.Pointer<QKSqliteColumn>)>();
+          ffi.Pointer<QKString> Function(
+              ffi.Pointer<QKSqliteColumn>, ffi.Pointer<ffi.Int>)>();
 
   int QKSQliteColumnGetIntValue(
     ffi.Pointer<QKSqliteColumn> instance,
+    ffi.Pointer<ffi.Int> resultCode,
   ) {
     return _QKSQliteColumnGetIntValue(
       instance,
+      resultCode,
     );
   }
 
   late final _QKSQliteColumnGetIntValuePtr = _lookup<
-          ffi.NativeFunction<ffi.Int Function(ffi.Pointer<QKSqliteColumn>)>>(
-      'QKSQliteColumnGetIntValue');
-  late final _QKSQliteColumnGetIntValue = _QKSQliteColumnGetIntValuePtr
-      .asFunction<int Function(ffi.Pointer<QKSqliteColumn>)>();
+      ffi.NativeFunction<
+          ffi.Int Function(ffi.Pointer<QKSqliteColumn>,
+              ffi.Pointer<ffi.Int>)>>('QKSQliteColumnGetIntValue');
+  late final _QKSQliteColumnGetIntValue =
+      _QKSQliteColumnGetIntValuePtr.asFunction<
+          int Function(ffi.Pointer<QKSqliteColumn>, ffi.Pointer<ffi.Int>)>();
 
   int QKSQliteColumnGetDoubleValue(
     ffi.Pointer<QKSqliteColumn> instance,
+    ffi.Pointer<ffi.Int> resultCode,
   ) {
     return _QKSQliteColumnGetDoubleValue(
       instance,
+      resultCode,
     );
   }
 
   late final _QKSQliteColumnGetDoubleValuePtr = _lookup<
-          ffi.NativeFunction<ffi.Int Function(ffi.Pointer<QKSqliteColumn>)>>(
-      'QKSQliteColumnGetDoubleValue');
-  late final _QKSQliteColumnGetDoubleValue = _QKSQliteColumnGetDoubleValuePtr
-      .asFunction<int Function(ffi.Pointer<QKSqliteColumn>)>();
+      ffi.NativeFunction<
+          ffi.Int Function(ffi.Pointer<QKSqliteColumn>,
+              ffi.Pointer<ffi.Int>)>>('QKSQliteColumnGetDoubleValue');
+  late final _QKSQliteColumnGetDoubleValue =
+      _QKSQliteColumnGetDoubleValuePtr.asFunction<
+          int Function(ffi.Pointer<QKSqliteColumn>, ffi.Pointer<ffi.Int>)>();
 
   ffi.Pointer<QKString> QKSQliteColumnGetName(
     ffi.Pointer<QKSqliteColumn> instance,
+    ffi.Pointer<ffi.Int> resultCode,
   ) {
     return _QKSQliteColumnGetName(
       instance,
+      resultCode,
     );
   }
 
   late final _QKSQliteColumnGetNamePtr = _lookup<
       ffi.NativeFunction<
-          ffi.Pointer<QKString> Function(
-              ffi.Pointer<QKSqliteColumn>)>>('QKSQliteColumnGetName');
+          ffi.Pointer<QKString> Function(ffi.Pointer<QKSqliteColumn>,
+              ffi.Pointer<ffi.Int>)>>('QKSQliteColumnGetName');
   late final _QKSQliteColumnGetName = _QKSQliteColumnGetNamePtr.asFunction<
-      ffi.Pointer<QKString> Function(ffi.Pointer<QKSqliteColumn>)>();
+      ffi.Pointer<QKString> Function(
+          ffi.Pointer<QKSqliteColumn>, ffi.Pointer<ffi.Int>)>();
 
   int QKSQliteColumnGetValueType(
     ffi.Pointer<QKSqliteColumn> instance,
+    ffi.Pointer<ffi.Int> resultCode,
   ) {
     return _QKSQliteColumnGetValueType(
       instance,
+      resultCode,
     );
   }
 
   late final _QKSQliteColumnGetValueTypePtr = _lookup<
-          ffi.NativeFunction<ffi.Int Function(ffi.Pointer<QKSqliteColumn>)>>(
-      'QKSQliteColumnGetValueType');
-  late final _QKSQliteColumnGetValueType = _QKSQliteColumnGetValueTypePtr
-      .asFunction<int Function(ffi.Pointer<QKSqliteColumn>)>();
+      ffi.NativeFunction<
+          ffi.Int Function(ffi.Pointer<QKSqliteColumn>,
+              ffi.Pointer<ffi.Int>)>>('QKSQliteColumnGetValueType');
+  late final _QKSQliteColumnGetValueType =
+      _QKSQliteColumnGetValueTypePtr.asFunction<
+          int Function(ffi.Pointer<QKSqliteColumn>, ffi.Pointer<ffi.Int>)>();
 
   int QKSqliteRowGetColumnCount(
     ffi.Pointer<QKSqliteRow> instance,
+    ffi.Pointer<ffi.Int> resultCode,
   ) {
     return _QKSqliteRowGetColumnCount(
       instance,
+      resultCode,
     );
   }
 
-  late final _QKSqliteRowGetColumnCountPtr =
-      _lookup<ffi.NativeFunction<ffi.Int Function(ffi.Pointer<QKSqliteRow>)>>(
-          'QKSqliteRowGetColumnCount');
-  late final _QKSqliteRowGetColumnCount = _QKSqliteRowGetColumnCountPtr
-      .asFunction<int Function(ffi.Pointer<QKSqliteRow>)>();
+  late final _QKSqliteRowGetColumnCountPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Int Function(ffi.Pointer<QKSqliteRow>,
+              ffi.Pointer<ffi.Int>)>>('QKSqliteRowGetColumnCount');
+  late final _QKSqliteRowGetColumnCount =
+      _QKSqliteRowGetColumnCountPtr.asFunction<
+          int Function(ffi.Pointer<QKSqliteRow>, ffi.Pointer<ffi.Int>)>();
 
   ffi.Pointer<QKSqliteColumn> QKSqliteRowGetColumnByName(
     ffi.Pointer<QKSqliteRow> instance,
     ffi.Pointer<QKString> name,
+    ffi.Pointer<ffi.Int> resultCode,
   ) {
     return _QKSqliteRowGetColumnByName(
       instance,
       name,
+      resultCode,
     );
   }
 
   late final _QKSqliteRowGetColumnByNamePtr = _lookup<
       ffi.NativeFunction<
-          ffi.Pointer<QKSqliteColumn> Function(ffi.Pointer<QKSqliteRow>,
-              ffi.Pointer<QKString>)>>('QKSqliteRowGetColumnByName');
+          ffi.Pointer<QKSqliteColumn> Function(
+              ffi.Pointer<QKSqliteRow>,
+              ffi.Pointer<QKString>,
+              ffi.Pointer<ffi.Int>)>>('QKSqliteRowGetColumnByName');
   late final _QKSqliteRowGetColumnByName =
       _QKSqliteRowGetColumnByNamePtr.asFunction<
-          ffi.Pointer<QKSqliteColumn> Function(
-              ffi.Pointer<QKSqliteRow>, ffi.Pointer<QKString>)>();
+          ffi.Pointer<QKSqliteColumn> Function(ffi.Pointer<QKSqliteRow>,
+              ffi.Pointer<QKString>, ffi.Pointer<ffi.Int>)>();
 
   ffi.Pointer<QKSqliteColumn> QKSqliteRowGetColumnByIndex(
     ffi.Pointer<QKSqliteRow> instance,
     int index,
+    ffi.Pointer<ffi.Int> resultCode,
   ) {
     return _QKSqliteRowGetColumnByIndex(
       instance,
       index,
+      resultCode,
     );
   }
 
   late final _QKSqliteRowGetColumnByIndexPtr = _lookup<
       ffi.NativeFunction<
           ffi.Pointer<QKSqliteColumn> Function(ffi.Pointer<QKSqliteRow>,
-              ffi.Int)>>('QKSqliteRowGetColumnByIndex');
+              ffi.Int, ffi.Pointer<ffi.Int>)>>('QKSqliteRowGetColumnByIndex');
   late final _QKSqliteRowGetColumnByIndex =
       _QKSqliteRowGetColumnByIndexPtr.asFunction<
           ffi.Pointer<QKSqliteColumn> Function(
-              ffi.Pointer<QKSqliteRow>, int)>();
+              ffi.Pointer<QKSqliteRow>, int, ffi.Pointer<ffi.Int>)>();
 
   ffi.Pointer<QKSqliteRow> QKSqliteResultGetRow(
     ffi.Pointer<QKSqliteResult> instance,
     int index,
+    ffi.Pointer<ffi.Int> resultCode,
   ) {
     return _QKSqliteResultGetRow(
       instance,
       index,
+      resultCode,
     );
   }
 
   late final _QKSqliteResultGetRowPtr = _lookup<
       ffi.NativeFunction<
-          ffi.Pointer<QKSqliteRow> Function(
-              ffi.Pointer<QKSqliteResult>, ffi.Int)>>('QKSqliteResultGetRow');
+          ffi.Pointer<QKSqliteRow> Function(ffi.Pointer<QKSqliteResult>,
+              ffi.Int, ffi.Pointer<ffi.Int>)>>('QKSqliteResultGetRow');
   late final _QKSqliteResultGetRow = _QKSqliteResultGetRowPtr.asFunction<
-      ffi.Pointer<QKSqliteRow> Function(ffi.Pointer<QKSqliteResult>, int)>();
+      ffi.Pointer<QKSqliteRow> Function(
+          ffi.Pointer<QKSqliteResult>, int, ffi.Pointer<ffi.Int>)>();
 
   int QKSqliteResultGetRowCount(
     ffi.Pointer<QKSqliteResult> instance,
+    ffi.Pointer<ffi.Int> resultCode,
   ) {
     return _QKSqliteResultGetRowCount(
       instance,
+      resultCode,
     );
   }
 
   late final _QKSqliteResultGetRowCountPtr = _lookup<
-          ffi.NativeFunction<ffi.Int Function(ffi.Pointer<QKSqliteResult>)>>(
-      'QKSqliteResultGetRowCount');
-  late final _QKSqliteResultGetRowCount = _QKSqliteResultGetRowCountPtr
-      .asFunction<int Function(ffi.Pointer<QKSqliteResult>)>();
+      ffi.NativeFunction<
+          ffi.Int Function(ffi.Pointer<QKSqliteResult>,
+              ffi.Pointer<ffi.Int>)>>('QKSqliteResultGetRowCount');
+  late final _QKSqliteResultGetRowCount =
+      _QKSqliteResultGetRowCountPtr.asFunction<
+          int Function(ffi.Pointer<QKSqliteResult>, ffi.Pointer<ffi.Int>)>();
 
   int QKSqliteCommandBindInt(
     ffi.Pointer<QKSqliteCommand> instance,
     ffi.Pointer<QKString> name,
     int value,
+    ffi.Pointer<ffi.Int> resultCode,
   ) {
     return _QKSqliteCommandBindInt(
       instance,
       name,
       value,
+      resultCode,
     );
   }
 
   late final _QKSqliteCommandBindIntPtr = _lookup<
       ffi.NativeFunction<
           ffi.Int Function(ffi.Pointer<QKSqliteCommand>, ffi.Pointer<QKString>,
-              ffi.Int)>>('QKSqliteCommandBindInt');
+              ffi.Int, ffi.Pointer<ffi.Int>)>>('QKSqliteCommandBindInt');
   late final _QKSqliteCommandBindInt = _QKSqliteCommandBindIntPtr.asFunction<
-      int Function(ffi.Pointer<QKSqliteCommand>, ffi.Pointer<QKString>, int)>();
+      int Function(ffi.Pointer<QKSqliteCommand>, ffi.Pointer<QKString>, int,
+          ffi.Pointer<ffi.Int>)>();
 
   int QKSqliteCommandBindString(
     ffi.Pointer<QKSqliteCommand> instance,
     ffi.Pointer<QKString> name,
     ffi.Pointer<QKString> value,
+    ffi.Pointer<ffi.Int> resultCode,
   ) {
     return _QKSqliteCommandBindString(
       instance,
       name,
       value,
+      resultCode,
     );
   }
 
   late final _QKSqliteCommandBindStringPtr = _lookup<
       ffi.NativeFunction<
-          ffi.Int Function(ffi.Pointer<QKSqliteCommand>, ffi.Pointer<QKString>,
-              ffi.Pointer<QKString>)>>('QKSqliteCommandBindString');
+          ffi.Int Function(
+              ffi.Pointer<QKSqliteCommand>,
+              ffi.Pointer<QKString>,
+              ffi.Pointer<QKString>,
+              ffi.Pointer<ffi.Int>)>>('QKSqliteCommandBindString');
   late final _QKSqliteCommandBindString =
       _QKSqliteCommandBindStringPtr.asFunction<
           int Function(ffi.Pointer<QKSqliteCommand>, ffi.Pointer<QKString>,
-              ffi.Pointer<QKString>)>();
+              ffi.Pointer<QKString>, ffi.Pointer<ffi.Int>)>();
 
   ffi.Pointer<QKSqliteResult> QKSqliteCommandRun(
     ffi.Pointer<QKSqliteCommand> instance,
+    ffi.Pointer<ffi.Int> resultCode,
   ) {
     return _QKSqliteCommandRun(
       instance,
+      resultCode,
     );
   }
 
   late final _QKSqliteCommandRunPtr = _lookup<
       ffi.NativeFunction<
-          ffi.Pointer<QKSqliteResult> Function(
-              ffi.Pointer<QKSqliteCommand>)>>('QKSqliteCommandRun');
+          ffi.Pointer<QKSqliteResult> Function(ffi.Pointer<QKSqliteCommand>,
+              ffi.Pointer<ffi.Int>)>>('QKSqliteCommandRun');
   late final _QKSqliteCommandRun = _QKSqliteCommandRunPtr.asFunction<
-      ffi.Pointer<QKSqliteResult> Function(ffi.Pointer<QKSqliteCommand>)>();
+      ffi.Pointer<QKSqliteResult> Function(
+          ffi.Pointer<QKSqliteCommand>, ffi.Pointer<ffi.Int>)>();
 
   int QKSqliteCommandClose(
     ffi.Pointer<QKSqliteCommand> instance,
+    ffi.Pointer<ffi.Int> resultCode,
   ) {
     return _QKSqliteCommandClose(
       instance,
+      resultCode,
     );
   }
 
   late final _QKSqliteCommandClosePtr = _lookup<
-          ffi.NativeFunction<ffi.Int Function(ffi.Pointer<QKSqliteCommand>)>>(
-      'QKSqliteCommandClose');
+      ffi.NativeFunction<
+          ffi.Int Function(ffi.Pointer<QKSqliteCommand>,
+              ffi.Pointer<ffi.Int>)>>('QKSqliteCommandClose');
   late final _QKSqliteCommandClose = _QKSqliteCommandClosePtr.asFunction<
-      int Function(ffi.Pointer<QKSqliteCommand>)>();
+      int Function(ffi.Pointer<QKSqliteCommand>, ffi.Pointer<ffi.Int>)>();
 
   ffi.Pointer<QKSqliteService> QKSqliteServiceCreate(
     ffi.Pointer<QKString> message,
+    ffi.Pointer<ffi.Int> resultCode,
   ) {
     return _QKSqliteServiceCreate(
       message,
+      resultCode,
     );
   }
 
   late final _QKSqliteServiceCreatePtr = _lookup<
       ffi.NativeFunction<
-          ffi.Pointer<QKSqliteService> Function(
-              ffi.Pointer<QKString>)>>('QKSqliteServiceCreate');
+          ffi.Pointer<QKSqliteService> Function(ffi.Pointer<QKString>,
+              ffi.Pointer<ffi.Int>)>>('QKSqliteServiceCreate');
   late final _QKSqliteServiceCreate = _QKSqliteServiceCreatePtr.asFunction<
-      ffi.Pointer<QKSqliteService> Function(ffi.Pointer<QKString>)>();
+      ffi.Pointer<QKSqliteService> Function(
+          ffi.Pointer<QKString>, ffi.Pointer<ffi.Int>)>();
 
   void QKSqliteServiceDelete(
     ffi.Pointer<QKSqliteService> instance,
+    ffi.Pointer<ffi.Int> resultCode,
   ) {
     return _QKSqliteServiceDelete(
       instance,
+      resultCode,
     );
   }
 
   late final _QKSqliteServiceDeletePtr = _lookup<
-          ffi.NativeFunction<ffi.Void Function(ffi.Pointer<QKSqliteService>)>>(
-      'QKSqliteServiceDelete');
+      ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<QKSqliteService>,
+              ffi.Pointer<ffi.Int>)>>('QKSqliteServiceDelete');
   late final _QKSqliteServiceDelete = _QKSqliteServiceDeletePtr.asFunction<
-      void Function(ffi.Pointer<QKSqliteService>)>();
+      void Function(ffi.Pointer<QKSqliteService>, ffi.Pointer<ffi.Int>)>();
 
   ffi.Pointer<QKSqliteCommand> QKSqliteServiceCreateCommand(
     ffi.Pointer<QKSqliteService> instance,
     ffi.Pointer<QKString> sqlText,
+    ffi.Pointer<ffi.Int> resultCode,
   ) {
     return _QKSqliteServiceCreateCommand(
       instance,
       sqlText,
+      resultCode,
     );
   }
 
   late final _QKSqliteServiceCreateCommandPtr = _lookup<
       ffi.NativeFunction<
-          ffi.Pointer<QKSqliteCommand> Function(ffi.Pointer<QKSqliteService>,
-              ffi.Pointer<QKString>)>>('QKSqliteServiceCreateCommand');
+          ffi.Pointer<QKSqliteCommand> Function(
+              ffi.Pointer<QKSqliteService>,
+              ffi.Pointer<QKString>,
+              ffi.Pointer<ffi.Int>)>>('QKSqliteServiceCreateCommand');
   late final _QKSqliteServiceCreateCommand =
       _QKSqliteServiceCreateCommandPtr.asFunction<
-          ffi.Pointer<QKSqliteCommand> Function(
-              ffi.Pointer<QKSqliteService>, ffi.Pointer<QKString>)>();
+          ffi.Pointer<QKSqliteCommand> Function(ffi.Pointer<QKSqliteService>,
+              ffi.Pointer<QKString>, ffi.Pointer<ffi.Int>)>();
 
   ffi.Pointer<QKString> QKSqliteVersion(
     ffi.Pointer<QKSqliteService> instance,
+    ffi.Pointer<ffi.Int> resultCode,
   ) {
     return _QKSqliteVersion(
       instance,
+      resultCode,
     );
   }
 
   late final _QKSqliteVersionPtr = _lookup<
       ffi.NativeFunction<
-          ffi.Pointer<QKString> Function(
-              ffi.Pointer<QKSqliteService>)>>('QKSqliteVersion');
+          ffi.Pointer<QKString> Function(ffi.Pointer<QKSqliteService>,
+              ffi.Pointer<ffi.Int>)>>('QKSqliteVersion');
   late final _QKSqliteVersion = _QKSqliteVersionPtr.asFunction<
-      ffi.Pointer<QKString> Function(ffi.Pointer<QKSqliteService>)>();
+      ffi.Pointer<QKString> Function(
+          ffi.Pointer<QKSqliteService>, ffi.Pointer<ffi.Int>)>();
 
   ffi.Pointer<QKSqliteResult> QKSqliteRunSql(
     ffi.Pointer<QKSqliteService> instance,
     ffi.Pointer<QKString> sqlText,
+    ffi.Pointer<ffi.Int> resultCode,
   ) {
     return _QKSqliteRunSql(
       instance,
       sqlText,
+      resultCode,
     );
   }
 
   late final _QKSqliteRunSqlPtr = _lookup<
       ffi.NativeFunction<
           ffi.Pointer<QKSqliteResult> Function(ffi.Pointer<QKSqliteService>,
-              ffi.Pointer<QKString>)>>('QKSqliteRunSql');
+              ffi.Pointer<QKString>, ffi.Pointer<ffi.Int>)>>('QKSqliteRunSql');
   late final _QKSqliteRunSql = _QKSqliteRunSqlPtr.asFunction<
-      ffi.Pointer<QKSqliteResult> Function(
-          ffi.Pointer<QKSqliteService>, ffi.Pointer<QKString>)>();
+      ffi.Pointer<QKSqliteResult> Function(ffi.Pointer<QKSqliteService>,
+          ffi.Pointer<QKString>, ffi.Pointer<ffi.Int>)>();
 }
 
 final class QKString extends ffi.Struct {
