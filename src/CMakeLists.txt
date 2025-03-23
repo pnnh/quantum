@@ -7,10 +7,14 @@ if (APPLE)
 endif ()
 
 # 设置语言标准
-set(CMAKE_C_STANDARD 23)
+if (WIN32)
+    set(CMAKE_C_STANDARD 17)
+else ()
+    set(CMAKE_C_STANDARD 23)
+endif ()
+set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # 设置开启显示详细的构建过程
 set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -64,7 +68,6 @@ find_package(yaml-cpp CONFIG REQUIRED)
 target_link_libraries(${LIB_NAME} PUBLIC yaml-cpp::yaml-cpp)
 
 if (APPLE)
-    message("configure for Apple")
     set_target_properties(${LIB_NAME} PROPERTIES
             FRAMEWORK TRUE
             FRAMEWORK_VERSION A
