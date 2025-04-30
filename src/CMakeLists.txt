@@ -38,8 +38,12 @@ set(LIB_NAME "MTQuantum")
 file(GLOB_RECURSE QUANTUM_SOURCES
         quantum/*.c
         quantum/*.cpp
-        quark/*.c
-        quark/*.cpp)
+        quark/tests/*.c
+        quark/tests/*.cpp
+        quark/business/*.cpp
+        quark/core/*.cpp
+        quark/infra/*.cpp
+        quark/services/*.cpp)
 
 if (APPLE)
     list(APPEND QUANTUM_SOURCES module.modulemap)
